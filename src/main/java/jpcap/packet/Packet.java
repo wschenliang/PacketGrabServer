@@ -1,6 +1,6 @@
-package com.jiangnan.jpcap.packet;
+package jpcap.packet;
 
-import com.jiangnan.jpcap.JpcapCaptor;
+import jpcap.JpcapCaptor;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 package com.jiangnan.thread;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.packet.Packet;
 
 public class AThread implements Runnable{
 

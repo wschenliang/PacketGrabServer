@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap;
+package jpcap;
 
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public class NetworkInterface {
 
     @Override
     public String toString() {
-        return "NetworkInterface{" +
+        return "{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", loopback=" + loopback +
@@ -57,6 +57,6 @@ public class NetworkInterface {
                 ", datalink_description='" + datalink_description + '\'' +
                 ", mac_address=" + Arrays.toString(mac_address) +
                 ", addresses=" + Arrays.toString(addresses) +
-                '}';
+                '}' + "\n";
     }
 }

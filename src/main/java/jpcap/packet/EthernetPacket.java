@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap.packet;
+package jpcap.packet;
 
 /**
  * 这个类代表以太网数据包。

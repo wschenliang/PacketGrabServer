@@ -1,10 +1,10 @@
 package com.jiangnan.test;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.NetworkInterfaceAddress;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.NetworkInterfaceAddress;
+import jpcap.PacketReceiver;
+import jpcap.packet.Packet;
 
 import java.io.IOException;
 

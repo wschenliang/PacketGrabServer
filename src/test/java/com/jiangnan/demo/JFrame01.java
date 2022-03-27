@@ -1,7 +1,7 @@
 package com.jiangnan.demo;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;

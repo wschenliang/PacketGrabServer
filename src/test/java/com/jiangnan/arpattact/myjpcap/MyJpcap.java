@@ -2,8 +2,8 @@ package com.jiangnan.arpattact.myjpcap;
 
 
 import com.jiangnan.arpattact.ui.Main;
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.*;
+import jpcap.JpcapCaptor;
 
 import java.io.IOException;
 

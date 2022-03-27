@@ -1,7 +1,9 @@
 package com.jiangnan.arpattact.test;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.packet.Packet;
 
 import java.io.IOException;
 
@@ -38,7 +40,7 @@ public class Test {
 		/**
 		 * ����һ�����񵽵�Packet
 		 */
-		Packet packet = jpcap.getPacket();	
+		Packet packet = jpcap.getPacket();
 		
 		/**
 		 * ��ֹ����ץ��������

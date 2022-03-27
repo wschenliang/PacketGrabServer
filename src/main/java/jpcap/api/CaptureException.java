@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap.api;
+package jpcap.api;
 
 public class CaptureException extends RuntimeException {
     public CaptureException() {

@@ -1,7 +1,7 @@
 package com.jiangnan.arpattact.test;
 
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.PacketReceiver;
+import jpcap.packet.*;
 
 
 public class MyJpcap implements PacketReceiver {

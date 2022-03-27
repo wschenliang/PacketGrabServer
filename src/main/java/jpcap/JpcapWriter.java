@@ -1,6 +1,6 @@
-package com.jiangnan.jpcap;
+package jpcap;
 
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.packet.Packet;
 
 import java.io.IOException;
 

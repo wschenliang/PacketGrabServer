@@ -1,9 +1,10 @@
 package com.jiangnan.test;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.*;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.PacketReceiver;
+import jpcap.packet.Packet;
 
 
 public class Test implements PacketReceiver

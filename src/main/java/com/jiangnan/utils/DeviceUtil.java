@@ -1,10 +1,11 @@
 package com.jiangnan.utils;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.NetworkInterfaceAddress;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.NetworkInterfaceAddress;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  *
@@ -54,7 +55,7 @@ public class DeviceUtil {
     }
 
     public static void main(String[] args) {
-        printDevices();
+        System.out.println(Arrays.toString(getDeviceList()));
     }
 
 

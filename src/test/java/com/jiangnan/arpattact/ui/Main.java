@@ -3,9 +3,9 @@ package com.jiangnan.arpattact.ui;
 
 import com.jiangnan.arpattact.myjpcap.MyJpcap;
 import com.jiangnan.arpattact.util.NetUtil;
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.packet.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

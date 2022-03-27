@@ -19,9 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI

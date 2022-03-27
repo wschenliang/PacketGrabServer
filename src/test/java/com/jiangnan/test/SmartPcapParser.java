@@ -1,9 +1,8 @@
 package com.jiangnan.test;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.*;
-import com.jiangnan.jpcap.packet.IPPacket;
-import com.jiangnan.jpcap.packet.UDPPacket;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.packet.*;
 
 import java.util.Date;
 import java.util.Vector;

@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap;
+package jpcap;
 
 /**
  *

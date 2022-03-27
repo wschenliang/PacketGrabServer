@@ -1,7 +1,12 @@
 package com.jiangnan.semple;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
+import jpcap.NetworkInterfaceAddress;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.EthernetPacket;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -10,7 +15,7 @@ import java.util.Arrays;
 public class ARP {
 	public static byte[] arp(InetAddress ip) throws java.io.IOException{
 		//find network interface
-		NetworkInterface[] devices=JpcapCaptor.getDeviceList();
+		NetworkInterface[] devices= JpcapCaptor.getDeviceList();
 		NetworkInterface device=null;
 
 loop:	for(NetworkInterface d:devices){

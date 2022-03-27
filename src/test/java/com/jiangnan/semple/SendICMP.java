@@ -1,9 +1,12 @@
 package com.jiangnan.semple;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.EthernetPacket;
-import com.jiangnan.jpcap.packet.ICMPPacket;
-import com.jiangnan.jpcap.packet.IPPacket;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.ICMPPacket;
+import jpcap.packet.IPPacket;
 
 import java.net.InetAddress;
 

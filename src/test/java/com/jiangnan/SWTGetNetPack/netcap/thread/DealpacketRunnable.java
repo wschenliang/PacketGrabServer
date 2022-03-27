@@ -2,10 +2,8 @@ package com.jiangnan.SWTGetNetPack.netcap.thread;
 
 import java.util.Vector;
 
-import javax.swing.table.DefaultTableModel;
-
 import com.jiangnan.SWTGetNetPack.netcap.JFrameMain;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.packet.Packet;
 
 
 public class DealpacketRunnable implements Runnable {

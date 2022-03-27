@@ -1,11 +1,11 @@
 package com.jiangnan.arpattact;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.JpcapSender;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.packet.ARPPacket;
-import com.jiangnan.jpcap.packet.EthernetPacket;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.Packet;
 
 import javax.swing.*;
 import java.awt.*;

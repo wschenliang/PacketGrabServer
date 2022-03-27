@@ -1,9 +1,9 @@
 package com.jiangnan;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.JpcapSender;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
+import jpcap.packet.Packet;
 import com.jiangnan.thread.AThread;
 import com.jiangnan.utils.DeviceUtil;
 import com.jiangnan.utils.PacketUtil;

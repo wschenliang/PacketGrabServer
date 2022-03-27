@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap;
+package jpcap;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

@@ -1,9 +1,9 @@
 package com.jiangnan.demo;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.PacketReceiver;
+import jpcap.packet.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

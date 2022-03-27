@@ -1,7 +1,11 @@
 package com.jiangnan.semple;
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.NetworkInterfaceAddress;
+import jpcap.PacketReceiver;
+import jpcap.packet.Packet;
 
 class Tcpdump implements PacketReceiver {
 	public void receivePacket(Packet packet) {

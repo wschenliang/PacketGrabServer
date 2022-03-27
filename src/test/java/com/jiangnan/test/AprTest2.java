@@ -1,9 +1,9 @@
 package com.jiangnan.test;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.JpcapSender;
-import com.jiangnan.jpcap.packet.ARPPacket;
-import com.jiangnan.jpcap.packet.EthernetPacket;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.EthernetPacket;
 
 import java.io.IOException;
 import java.net.InetAddress;

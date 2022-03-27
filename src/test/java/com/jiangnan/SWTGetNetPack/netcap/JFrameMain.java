@@ -27,12 +27,12 @@ import javax.swing.table.DefaultTableModel;
 
 import com.jiangnan.SWTGetNetPack.netcap.button.StartRecordButton;
 import com.jiangnan.SWTGetNetPack.netcap.button.StopRecordButton;
-import com.jiangnan.jpcap.packet.ARPPacket;
-import com.jiangnan.jpcap.packet.ICMPPacket;
-import com.jiangnan.jpcap.packet.IPPacket;
-import com.jiangnan.jpcap.packet.Packet;
-import com.jiangnan.jpcap.packet.TCPPacket;
-import com.jiangnan.jpcap.packet.UDPPacket;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.ICMPPacket;
+import jpcap.packet.IPPacket;
+import jpcap.packet.Packet;
+import jpcap.packet.TCPPacket;
+import jpcap.packet.UDPPacket;
 
 
 public class JFrameMain extends javax.swing.JFrame implements ActionListener {

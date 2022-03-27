@@ -1,6 +1,6 @@
-package com.jiangnan.jpcap;
+package jpcap;
 
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.packet.Packet;
 
 /**
  * 该接口用于定义一个方法来分析捕获的数据包，该方法在JpcapCaptor.handlePacket()或JpcapCaptor.processPacket()中使用。

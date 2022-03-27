@@ -1,8 +1,8 @@
 package com.jiangnan.arpattact.test;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.packet.ARPPacket;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.Packet;
 
 import java.net.InetAddress;
 import java.util.Arrays;

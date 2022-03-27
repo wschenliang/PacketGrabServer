@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap.packet;
+package jpcap.packet;
 
 import java.io.Serializable;
 

@@ -1,9 +1,9 @@
-package com.jiangnan.jpcap.api;
+package jpcap.api;
 
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.PacketReceiver;
+import jpcap.packet.Packet;
 
 import java.io.IOException;
 import java.net.NetworkInterface;

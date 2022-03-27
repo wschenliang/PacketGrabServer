@@ -1,11 +1,14 @@
 package com.jiangnan.arpattact.test;
 
 
-import com.jiangnan.jpcap.*;
-import com.jiangnan.jpcap.packet.ARPPacket;
-import com.jiangnan.jpcap.packet.EthernetPacket;
-import com.jiangnan.jpcap.packet.Packet;
-import com.jiangnan.jpcap.packet.TCPPacket;
+import jpcap.*;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
+import jpcap.packet.ARPPacket;
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.Packet;
+import jpcap.packet.TCPPacket;
 
 import java.io.IOException;
 import java.net.InetAddress;

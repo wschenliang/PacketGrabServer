@@ -2,9 +2,9 @@ package com.jiangnan.arpattact.myjpcap;
 
 
 import com.jiangnan.arpattact.ui.Main;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.EthernetPacket;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.PacketReceiver;
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.Packet;
 
 /**
  * ����ʵ��PacketReceiver�ӿ�

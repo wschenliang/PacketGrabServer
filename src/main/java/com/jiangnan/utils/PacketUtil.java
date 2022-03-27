@@ -1,8 +1,8 @@
 package com.jiangnan.utils;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.JpcapWriter;
-import com.jiangnan.jpcap.packet.*;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapWriter;
+import jpcap.packet.*;
 
 import java.io.IOException;
 import java.net.InetAddress;

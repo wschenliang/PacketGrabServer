@@ -1,4 +1,4 @@
-package com.jiangnan.jpcap.packet;
+package jpcap.packet;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;

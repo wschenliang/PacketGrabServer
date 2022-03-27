@@ -5,10 +5,10 @@ import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.JpcapWriter;
-import com.jiangnan.jpcap.PacketReceiver;
-import com.jiangnan.jpcap.packet.Packet;
+import jpcap.JpcapCaptor;
+import jpcap.JpcapWriter;
+import jpcap.PacketReceiver;
+import jpcap.packet.Packet;
 
 public class Netcaptor {
 

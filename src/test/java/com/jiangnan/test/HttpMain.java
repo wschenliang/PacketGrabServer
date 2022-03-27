@@ -1,12 +1,12 @@
 package com.jiangnan.test;
 
 
-import com.jiangnan.jpcap.JpcapCaptor;
-import com.jiangnan.jpcap.NetworkInterface;
-import com.jiangnan.jpcap.NetworkInterfaceAddress;
-import com.jiangnan.jpcap.packet.EthernetPacket;
-import com.jiangnan.jpcap.packet.Packet;
-import com.jiangnan.jpcap.packet.TCPPacket;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
+import jpcap.NetworkInterfaceAddress;
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.Packet;
+import jpcap.packet.TCPPacket;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
