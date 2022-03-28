@@ -2,6 +2,7 @@ package jpcap.packet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 这个类代表ARP/RARP报文。
@@ -240,5 +241,25 @@ public class ARPPacket extends Packet {
         if (b == 0) return '0';
         else if (b < 10) return (char) ('0' + b);
         else return (char) ('a' + b - 10);
+    }
+
+    @Override
+    public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst) throws UnknownHostException {
+        InetAddress srcAddress = InetAddress.getByName(src);
+        InetAddress dstAddress = InetAddress.getByName(dst);
+        //构造ARP报文
+        ARPPacket arpPacket = new ARPPacket();
+        arpPacket.hardtype = ARPPacket.HARDTYPE_ETHER;//硬件类型
+        arpPacket.prototype = ARPPacket.PROTOTYPE_IP;//协议类型
+        arpPacket.operation = ARPPacket.ARP_REQUEST;//指明为ARP请求报文(另一种为回复报文)
+        arpPacket.hlen = 6;//物理地址长度
+        arpPacket.plen = 4;//协议地址长度
+        arpPacket.sender_hardaddr = src_mac.getBytes();//发送端为本机mac地址
+        arpPacket.sender_protoaddr = srcAddress.getAddress();//本机IP地址
+        arpPacket.target_hardaddr = dst_mac.getBytes(); //目的端mac地址为广播地址
+        arpPacket.target_protoaddr = dstAddress.getAddress();//目的IP地址
+        arpPacket.datalink = new EthernetPacket(src_mac, dst_mac, EthernetPacket.ETHERTYPE_ARP);
+        arpPacket.data = data.getBytes();
+        return arpPacket;
     }
 }

@@ -1,5 +1,7 @@
 package jpcap.packet;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * 这个类代表以太网数据包。
  */
@@ -53,6 +55,15 @@ public class EthernetPacket extends DatalinkPacket {
         this.dst_mac = dst;
         this.src_mac = src;
         this.frametype = frame;
+    }
+
+    public EthernetPacket() {
+    }
+
+    public EthernetPacket(String src_mac, String dst_mac, short frametype) {
+        this.src_mac = src_mac.getBytes();
+        this.dst_mac = dst_mac.getBytes();
+        this.frametype = frametype;
     }
 
     /**

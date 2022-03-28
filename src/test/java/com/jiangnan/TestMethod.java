@@ -1,4 +1,4 @@
-package com.jiangnan.demo;
+package com.jiangnan;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
@@ -52,7 +52,7 @@ public class TestMethod {
             public void run(){
                 //使用接包处理器循环抓包
                 jpcap.loopPacket(-1, new TestPacketReceiver(jtable,device));
-            }    //TODO 每个线程启动loop方法，loop才是真正的无限循环方法，即使后面关闭线程也无效，线程做的只是开启loop，开启了就灭亡了，breakLoop可以关闭
+            }
         };
 
         Thread thread = new Thread(rnner);

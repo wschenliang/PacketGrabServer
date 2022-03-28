@@ -301,18 +301,6 @@ public class IPPacket extends Packet {
         return dst_ip.getAddress();
     }
 
-    /**
-     * Returns a string represenation of this packet.
-     * <p/>
-     * Format(IPv4): src_ip->dst_ip protocol(protocol) priority(priority)
-     * [D][T][R] hop(hop_limit) [RF/][DF/][MF] offset(offset) ident(ident)
-     * <p/>
-     * <p/>
-     * Format(IPv6): src_ip->dst_ip protocol(protocol) priority(priority)
-     * flowlabel(flow_label) hop(hop_limit)
-     *
-     * @return a string represenation of this packet
-     */
     public String toString() {
         if (version == 4) {
             return super.toString() + " " + src_ip + "->" + dst_ip
@@ -327,5 +315,16 @@ public class IPPacket extends Packet {
                     + " protocol(" + protocol + ") priority(" + priority
                     + ") flowlabel(" + flow_label + ") hop(" + hop_limit + ")";
         }
+    }
+
+    @Override
+    public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst) throws UnknownHostException {
+        IPPacket ipPacket = new IPPacket();
+        ipPacket.setIPv4Parameter(0,false,false,false,0,false,false,
+                false,0,0,128,230, InetAddress.getByName(dst), InetAddress.getByName(dst));
+        //构造ether帧（frame）
+        ipPacket.datalink = new EthernetPacket(src_mac, dst_mac, EthernetPacket.ETHERTYPE_IP);
+        ipPacket.data = data.getBytes();
+        return ipPacket;
     }
 }

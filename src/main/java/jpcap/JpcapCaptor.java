@@ -101,6 +101,7 @@ public class JpcapCaptor extends JpcapInstance {
     /**
      * 连续捕获指定的包数。与processPacket()不同，此方法忽略超时。
      * 此方法也不支持“非阻塞”模式。
+     * 每个线程启动loop方法，loop才是真正的无限循环方法，即使后面关闭线程也无效，线程做的只是开启loop，开启了就灭亡了，breakLoop可以关闭
      * @param count   需要捕获的包数 可以指定-1方式捕获数据包，直到出现timeour、EOF或错误。
      * @param handler JpcapHandler的一个实例，用于分析捕获的数据包
      * @return 抓包数

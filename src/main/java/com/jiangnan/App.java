@@ -1,11 +1,11 @@
 package com.jiangnan;
 
+import com.jiangnan.enums.Protocol;
 import jpcap.JpcapCaptor;
 import jpcap.JpcapSender;
-import jpcap.NetworkInterface;
 import jpcap.packet.Packet;
 import com.jiangnan.thread.AThread;
-import com.jiangnan.utils.DeviceUtil;
+import com.jiangnan.utils.JpcapUtil;
 import com.jiangnan.utils.PacketUtil;
 
 
@@ -22,39 +22,15 @@ public class App {
     public static void main(String[] args) throws IOException {
         //获取用户输入
         Scanner scanner = new Scanner(System.in);
-
         Packet[] packet = PacketUtil.getNewPacket();
-
-        //初始化数据包捕获的线程
         AThread t = null;
-
-        //获取网络设备并显示
-        NetworkInterface[] devices = DeviceUtil.getDeviceList();
-
-        //输入选择的监控的网卡
-        System.out.print("输入选择监听的适配器序号:");
-        int card = scanner.nextInt();
-        card = card -1;
-        System.out.println();
-
-        //打开选择的网络接口
-        JpcapCaptor captor = DeviceUtil.openDevice(devices, card);
-
-
+        JpcapCaptor captor = JpcapUtil.getDefaultCaptor();
         menu:
         while(true) {
             //功能菜单
-            System.out.println("请选择使用的功能编号：");
-            System.out.println("1. 捕获当前网卡的数据包");
-            System.out.println("2. 停止捕获网络数据包");
-            System.out.println("3. 导入本地的网络数据包");
-            System.out.println("4. 显示当前捕获的数据包");
-            System.out.println("5. 保存当前的网络数据包");
-            System.out.println("6. 分析数据包的协议分布");
-            System.out.println("7. 查看数据包详细信息");
-            System.out.println("8. 发送数据包给目标主机");
-            System.out.println("9. 退出");
-            System.out.print("你的选择：");
+            System.out.println("请选择使用的功能编号：\n 1. 捕获当前网卡的数据包 \n 2. 停止捕获网络数据包 \n " +
+                    "3. 导入本地的网络数据包 \n 4. 显示当前捕获的数据包 \n 5. 保存当前的网络数据包 \n " +
+                    "6. 分析数据包的协议分布 \n 7. 查看数据包详细信息 \n 8. 发送数据包给目标主机 \n 9. 退出\n ");
             //用户选择
             int choice = scanner.nextInt();
 
@@ -89,24 +65,9 @@ public class App {
                     PacketUtil.showPacketDetail(packet);
                     break;
                 case 8: System.out.print("请选择发送的协议类型(IP、TCP、UDP、ICMP、ARP): ");
-                    JpcapSender sender = JpcapSender.openDevice(devices[card]);
                     String type = scanner.next().toUpperCase();
-                    if(type.equals("IP")){
-                        sender.sendPacket(PacketUtil.generateIpPacket(src, dst));
-                    }else if(type.equals("TCP")) {
-                        sender.sendPacket(PacketUtil.generateTcpPacket(src, dst));
-                    }else if(type.equals("UDP")) {
-                        sender.sendPacket(PacketUtil.generateUdpPacket(src, dst));
-                    }else if(type.equals("ICMP")) {
-                        sender.sendPacket(PacketUtil.generateIcmpPacket(src, dst));
-                    }else if(type.equals("ARP")) {
-                        sender.sendPacket(PacketUtil.generateArpPacket(src, dst));
-                    }else {
-                        System.out.println("输入协议类型错误");
-                        break;
-                    }
-                    sender.close();
-                    System.out.println("已发送数据包给目标地址");
+                    String data = "";
+                    JpcapUtil.sendDefaultPacket(Protocol.valueOf(type), data, src, dst);
                     break;
                 case 9: break menu;
             }

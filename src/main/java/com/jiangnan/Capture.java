@@ -1,6 +1,7 @@
-package jpcap.api;
+package com.jiangnan;
 
-
+import com.jiangnan.exception.CaptureException;
+import com.jiangnan.api.PacketHandler;
 import jpcap.JpcapCaptor;
 import jpcap.PacketReceiver;
 import jpcap.packet.Packet;
@@ -37,6 +38,7 @@ public class Capture implements AutoCloseable {
         this.captor = captor;
     }
 
+    //开启了两个线程，一个现在用来输出packet，一个线程用力啊接受packet放入队列中
     public void start() {
         EXECUTOR.execute(captureWorker);
         captor.loopPacket(-1, new PacketReceiver() {
@@ -60,6 +62,7 @@ public class Capture implements AutoCloseable {
         handlers.remove(handler);
     }
 
+    //通过文件方式拿到捕获器
     public static Capture fromFile(String filename) {
         JpcapCaptor captor = null;
         try {
@@ -82,7 +85,7 @@ public class Capture implements AutoCloseable {
 
     public static void main(String... args) throws Exception {
 
-        try (Capture c = Capture.fromFile("")) {
+        try (Capture c = Capture.fromFile("./savePacket")) {
             c.addHandler(new PacketHandler() {
                 @Override
                 public void handle(Packet packet) {

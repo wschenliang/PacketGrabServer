@@ -40,11 +40,6 @@ public class NetworkInterfaceAddress {
 
     @Override
     public String toString() {
-        return "NetworkInterfaceAddress{" +
-                "address=" + address +
-                ", subnet=" + subnet +
-                ", broadcast=" + broadcast +
-                ", destination=" + destination +
-                '}';
+        return "address=" + address;
     }
 }

@@ -3,6 +3,7 @@ package jpcap.packet;
 import jpcap.JpcapCaptor;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 
 /**
  * 这是被捕获的所有数据包的一个根类 {@link JpcapCaptor Jpcap}.
@@ -80,5 +81,19 @@ public class Packet implements Serializable {
      */
     public String toString() {
         return sec + ":" + usec;
+    }
+
+    /**
+     * 用来产生默认发送包
+     * @param data
+     * @param src_mac
+     * @param dst_mac
+     * @param src
+     * @param dst
+     * @return
+     * @throws UnknownHostException
+     */
+    public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst)  throws UnknownHostException {
+        return EOF;
     }
 }

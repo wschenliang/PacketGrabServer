@@ -1,6 +1,8 @@
-package jpcap.api;
+package com.jiangnan.exception;
 
 public class CaptureException extends RuntimeException {
+    private static final long serialVersionUID = -7262273899953835542L;
+
     public CaptureException() {
         super();
     }

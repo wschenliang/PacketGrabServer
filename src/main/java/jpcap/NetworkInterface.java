@@ -47,16 +47,30 @@ public class NetworkInterface {
         this.addresses = addresses;
     }
 
+
+    public String getMacAddr() {
+        if (mac_address == null || mac_address.length == 0) {
+            return " ";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0, len = mac_address.length; i < len; i++) {
+            builder.append(Integer.toHexString(mac_address[i] & 0xff));
+            if (i != len - 1) {
+                builder.append(":");
+            }
+        }
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
         return "{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", loopback=" + loopback +
                 ", datalink_name='" + datalink_name + '\'' +
                 ", datalink_description='" + datalink_description + '\'' +
-                ", mac_address=" + Arrays.toString(mac_address) +
+                ", mac_address=" + getMacAddr()  +
                 ", addresses=" + Arrays.toString(addresses) +
-                '}' + "\n";
+                "}\n";
     }
 }

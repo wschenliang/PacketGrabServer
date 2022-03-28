@@ -1,5 +1,8 @@
 package jpcap.packet;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * 这个类代表TCP数据包。
  */
@@ -112,6 +115,9 @@ public class TCPPacket extends IPPacket {
         urgent_pointer = (short) urgent;
     }
 
+    public TCPPacket() {
+    }
+
     void setValue(int src, int dst, long seq, long ack_num, boolean urg, boolean ack,
                   boolean psh, boolean rst, boolean syn, boolean fin, boolean rsv1, boolean rsv2,
                   int win, short urp) {
@@ -143,5 +149,21 @@ public class TCPPacket extends IPPacket {
                 ") win(" + window + ")" + (ack ? " ack " + ack_num : "") + " " +
                 (syn ? " S" : "") + (fin ? " F" : "") + (psh ? " P" : "") +
                 (rst ? " R" : "") + (urg ? " U" : "");
+    }
+
+
+    @Override
+    public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst) throws UnknownHostException {
+        //构造TCP报文
+        TCPPacket tcpPacket = new TCPPacket(12, 34, 56, 78, false, false,
+                false, false, true, true, true, true, 10, 0);
+        //设置IP头
+        tcpPacket.setIPv4Parameter(0,false,false,false,0,false,false,
+                false,0,65,128,IPPacket.IPPROTO_TCP,InetAddress.getByName(dst), InetAddress.getByName(dst));
+
+        //构造ether帧（frame）
+        tcpPacket.datalink = new EthernetPacket(src_mac, dst_mac, EthernetPacket.ETHERTYPE_IP);
+        tcpPacket.data = data.getBytes();
+        return tcpPacket;
     }
 }

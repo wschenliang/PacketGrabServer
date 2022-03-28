@@ -339,13 +339,19 @@ public class ICMPPacket extends IPPacket {
         }
     }
 
-    /**
-     * Returns a string representation of this ICMP packet.<BR>
-     * <BR>
-     * Format: Ftype(type) code(code)
-     *
-     * @return string representation of this ICMP packet
-     */
+    @Override
+    public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst) throws UnknownHostException {
+        //生成ICMP报文
+        ICMPPacket icmpPacket = new ICMPPacket();
+        icmpPacket.type = ICMPPacket.ICMP_ECHO;//发送回显请求报文
+        //设置IPV4头
+        icmpPacket.setIPv4Parameter(0,false,false,false,0,false,false,
+                false,0,65,128,IPPacket.IPPROTO_ICMP,InetAddress.getByName(dst), InetAddress.getByName(dst));
+        icmpPacket.datalink = new EthernetPacket(src_mac, dst_mac, EthernetPacket.ETHERTYPE_IP);
+        icmpPacket.data = data.getBytes();
+        return icmpPacket;
+    }
+
     public String toString() {
         return super.toString() + "type(" + type + ") code(" + code + ")";
     }

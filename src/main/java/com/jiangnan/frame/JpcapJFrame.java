@@ -1,5 +1,7 @@
-package com.jiangnan.demo;
+package com.jiangnan.frame;
 
+import com.jiangnan.receiver.PacketReceiverImpl;
+import com.jiangnan.thread.LoopCapThread;
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
 
@@ -12,7 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Enumeration;
 
-public class JFrame01 {
+public class JpcapJFrame {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("抓包工具");
@@ -61,18 +63,17 @@ public class JFrame01 {
         for (int i = 6; i <=35 ; i++) {
             Invisible(columnModel.getColumn(i));
         }
-        final TestMethod testMethod = new TestMethod();
         start.setEnabled(true);
         start.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                testMethod.start(jtable,jComboBox);
+                startCap(jtable,jComboBox);
             }
         });
         end.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TestMethod.shutDown();
+                stopCap();
             }
         });
         topPanel.add(start);
@@ -162,6 +163,41 @@ public class JFrame01 {
         });
 
     }
+
+    private static JpcapCaptor jpcapCaptor;
+
+    private static void stopCap() {
+        jpcapCaptor.breakLoop();
+
+    }
+
+    private static void startCap(JTable jtable, JComboBox jComboBox) {
+        DefaultTableModel model = (DefaultTableModel)jtable.getModel();
+        model.setRowCount(0);
+        try{
+            //获取的网络接口对象数组
+            //分接口  源数据和协议分析 调整框体大小
+            Object selectedItem = jComboBox.getSelectedItem();
+            final  NetworkInterface[] devices = JpcapCaptor.getDeviceList();
+            NetworkInterface device = null;
+            for(int i=0;i<devices.length;i++){
+                NetworkInterface nc=devices[i];
+                if (nc.name.equals(selectedItem)){
+                    device = nc;
+                    break;
+                }
+            }
+            if (device == null) {
+                return;
+            }
+            jpcapCaptor = JpcapCaptor.openDevice(device, 1000, true, 20);
+            new Thread(new LoopCapThread(jpcapCaptor, device, jtable)).start();
+        }catch(Exception ef){
+            ef.printStackTrace();
+            System.out.println("启动失败:  "+ef);
+        }
+    }
+
     private static void InitGlobalFont(Font font) {
         FontUIResource fontRes = new FontUIResource(font);
         for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
