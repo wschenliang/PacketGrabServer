@@ -5,10 +5,7 @@ import jpcap.JpcapWriter;
 import jpcap.packet.*;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * 数据包常用工具

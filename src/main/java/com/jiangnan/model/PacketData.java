@@ -1,6 +1,8 @@
 package com.jiangnan.model;
 
 import com.jiangnan.enums.Protocol;
+import com.jiangnan.utils.FastjsonUtils;
+import jpcap.packet.*;
 
 import java.io.Serializable;
 
@@ -11,344 +13,132 @@ import java.io.Serializable;
  */
 public class PacketData implements Serializable {
     private static final long serialVersionUID = -3813876386951514859L;
+    //返回的是表格的第一行
+    public static String[] getTitle() {
+        return new String[]{"No.","Time","Source","Destination","Protocol","Length", "info"};
+    }
+    //获取数据数组，与上面的title一一对应
+    public Object[] getDataArrays() {
+        return new Object[]{num,time,src,dest,protocol.getName(),length,jsonInfo};
+    }
+
+    private void tcpPacketHandle(TCPPacket p) {
+        setSrc(p.src_ip.toString()).setDest(p.dst_ip.toString()).setProtocol(Protocol.TCP).setLength(p.len);
+        String jsonInfo = FastjsonUtils.toJSONString(p);
+        setJsonInfo(jsonInfo);
+    }
+    private void arpPacketHandle(ARPPacket p) {
+        setProtocol(Protocol.ARP);
+        String jsonInfo = FastjsonUtils.toJSONString(p);
+        setJsonInfo(jsonInfo);
+        Object senderProtocolAddress = p.getSenderProtocolAddress();
+        Object targetProtocolAddress = p.getTargetProtocolAddress();
+        Object senderHardwareAddress = p.getSenderHardwareAddress();
+        Object targetHardwareAddress = p.getTargetHardwareAddress();
+        setSrc(senderProtocolAddress.toString());
+        setDest(targetProtocolAddress.toString());
+    }
+
+    private void udpPacketHandle(UDPPacket p) {
+        setSrc(p.src_ip.toString()).setDest(p.dst_ip.toString()).setProtocol(Protocol.UDP).setLength(p.len);
+        String jsonInfo = FastjsonUtils.toJSONString(p);
+        setJsonInfo(jsonInfo);
+    }
+
     private int num;
     private long time;
     private String src;
     private String dest;
     private Protocol protocol;
-    //数据包长度
     private int length;
-    private String deviceName;
-    //帧类型
-    private short ethernetFrameType;
-    private String macSrc;
-    private String macDest;
-    private String srcPort;
-    private String destPort;
-    //ip version
-    private String ipVersion;
-    //片偏移
-    private int offset;
-    // IP数据包长度
-    private int ipLength;
-    //生存时间 IP
-    private short hopLimit;
-    //DF标志位 IP
-    private boolean dontFrag;
-    //MF标志位 IP
-    private boolean moreFrag;
-    //RF标志位 IP
-    private boolean rsvFrag;
-    //服务类型 IP
-    private byte rsvTos;
-    //分组标识 IP
-    private int ident;
-    //UDP包长度
-    private int udpLen;
-    //ack_num TCP
-    private long ackNum;
-    //紧急指针
-    private short urgentPointer;
-    //窗口大小
-    private int window;
-    //序号
-    private long sequence;
-    //保留标志1
-    private boolean rsv1;
-    //保留标志2
-    private boolean rsv2;
-    //urg
-    private boolean urg;
-    //ack
-    private boolean ack;
-    //psh
-    private boolean psh;
-    //rst
-    private boolean rst;
-    //syn
-    private boolean syn;
-    //fin
-    private boolean fin;
-    //数据包二进制
-    private byte[] dataBin;
+    //将数据包所有信息放入
+    private String jsonInfo;
+    private Packet packet;
+
+    /**
+     * 创建packetData对象必须要通过传回来的packet数据
+     * @param p 返回来的数据包
+     */
+    public PacketData(Packet p) {
+        setPacket(p);
+        if (p instanceof TCPPacket) {
+            tcpPacketHandle((TCPPacket) p);
+        } else if (p instanceof UDPPacket) {
+            udpPacketHandle((UDPPacket) p);
+        } else if (p instanceof ARPPacket) {
+            arpPacketHandle((ARPPacket) p);
+        }
+    }
 
     public int getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public PacketData setNum(int num) {
         this.num = num;
+        return this;
     }
 
     public long getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public PacketData setTime(long time) {
         this.time = time;
+        return this;
     }
 
     public String getSrc() {
         return src;
     }
 
-    public void setSrc(String src) {
+    public PacketData setSrc(String src) {
         this.src = src;
+        return this;
     }
 
     public String getDest() {
         return dest;
     }
 
-    public void setDest(String dest) {
+    public PacketData setDest(String dest) {
         this.dest = dest;
+        return this;
     }
 
     public Protocol getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(Protocol protocol) {
+    public PacketData setProtocol(Protocol protocol) {
         this.protocol = protocol;
+        return this;
     }
 
     public int getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public PacketData setLength(int length) {
         this.length = length;
+        return this;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getJsonInfo() {
+        return jsonInfo;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public PacketData setJsonInfo(String jsonInfo) {
+        this.jsonInfo = jsonInfo;
+        return this;
     }
 
-    public short getEthernetFrameType() {
-        return ethernetFrameType;
+    public Packet getPacket() {
+        return packet;
     }
 
-    public void setEthernetFrameType(short ethernetFrameType) {
-        this.ethernetFrameType = ethernetFrameType;
-    }
-
-    public String getMacSrc() {
-        return macSrc;
-    }
-
-    public void setMacSrc(String macSrc) {
-        this.macSrc = macSrc;
-    }
-
-    public String getMacDest() {
-        return macDest;
-    }
-
-    public void setMacDest(String macDest) {
-        this.macDest = macDest;
-    }
-
-    public String getSrcPort() {
-        return srcPort;
-    }
-
-    public void setSrcPort(String srcPort) {
-        this.srcPort = srcPort;
-    }
-
-    public String getDestPort() {
-        return destPort;
-    }
-
-    public void setDestPort(String destPort) {
-        this.destPort = destPort;
-    }
-
-    public String getIpVersion() {
-        return ipVersion;
-    }
-
-    public void setIpVersion(String ipVersion) {
-        this.ipVersion = ipVersion;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public int getIpLength() {
-        return ipLength;
-    }
-
-    public void setIpLength(int ipLength) {
-        this.ipLength = ipLength;
-    }
-
-    public short getHopLimit() {
-        return hopLimit;
-    }
-
-    public void setHopLimit(short hopLimit) {
-        this.hopLimit = hopLimit;
-    }
-
-    public boolean isDontFrag() {
-        return dontFrag;
-    }
-
-    public void setDontFrag(boolean dontFrag) {
-        this.dontFrag = dontFrag;
-    }
-
-    public boolean isMoreFrag() {
-        return moreFrag;
-    }
-
-    public void setMoreFrag(boolean moreFrag) {
-        this.moreFrag = moreFrag;
-    }
-
-    public boolean isRsvFrag() {
-        return rsvFrag;
-    }
-
-    public void setRsvFrag(boolean rsvFrag) {
-        this.rsvFrag = rsvFrag;
-    }
-
-    public byte getRsvTos() {
-        return rsvTos;
-    }
-
-    public void setRsvTos(byte rsvTos) {
-        this.rsvTos = rsvTos;
-    }
-
-    public int getIdent() {
-        return ident;
-    }
-
-    public void setIdent(int ident) {
-        this.ident = ident;
-    }
-
-    public int getUdpLen() {
-        return udpLen;
-    }
-
-    public void setUdpLen(int udpLen) {
-        this.udpLen = udpLen;
-    }
-
-    public long getAckNum() {
-        return ackNum;
-    }
-
-    public void setAckNum(long ackNum) {
-        this.ackNum = ackNum;
-    }
-
-    public short getUrgentPointer() {
-        return urgentPointer;
-    }
-
-    public void setUrgentPointer(short urgentPointer) {
-        this.urgentPointer = urgentPointer;
-    }
-
-    public int getWindow() {
-        return window;
-    }
-
-    public void setWindow(int window) {
-        this.window = window;
-    }
-
-    public long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(long sequence) {
-        this.sequence = sequence;
-    }
-
-    public boolean isRsv1() {
-        return rsv1;
-    }
-
-    public void setRsv1(boolean rsv1) {
-        this.rsv1 = rsv1;
-    }
-
-    public boolean isRsv2() {
-        return rsv2;
-    }
-
-    public void setRsv2(boolean rsv2) {
-        this.rsv2 = rsv2;
-    }
-
-    public boolean isUrg() {
-        return urg;
-    }
-
-    public void setUrg(boolean urg) {
-        this.urg = urg;
-    }
-
-    public boolean isAck() {
-        return ack;
-    }
-
-    public void setAck(boolean ack) {
-        this.ack = ack;
-    }
-
-    public boolean isPsh() {
-        return psh;
-    }
-
-    public void setPsh(boolean psh) {
-        this.psh = psh;
-    }
-
-    public boolean isRst() {
-        return rst;
-    }
-
-    public void setRst(boolean rst) {
-        this.rst = rst;
-    }
-
-    public boolean isSyn() {
-        return syn;
-    }
-
-    public void setSyn(boolean syn) {
-        this.syn = syn;
-    }
-
-    public boolean isFin() {
-        return fin;
-    }
-
-    public void setFin(boolean fin) {
-        this.fin = fin;
-    }
-
-    public byte[] getDataBin() {
-        return dataBin;
-    }
-
-    public void setDataBin(byte[] dataBin) {
-        this.dataBin = dataBin;
+    public PacketData setPacket(Packet packet) {
+        this.packet = packet;
+        return this;
     }
 }

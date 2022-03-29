@@ -96,4 +96,8 @@ public class Packet implements Serializable {
     public Packet defaultPacket(String data, String src_mac, String dst_mac, String src, String dst)  throws UnknownHostException {
         return EOF;
     }
+
+    public Object[] getDataArrays() {
+        return new Object[0];
+    }
 }
