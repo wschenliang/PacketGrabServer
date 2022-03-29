@@ -1,9 +1,8 @@
 package com.jiangnan.frame;
 
-import com.jiangnan.receiver.PacketReceiverImpl;
 import com.jiangnan.thread.LoopCapThread;
+import com.jiangnan.utils.JpcapUtil;
 import jpcap.JpcapCaptor;
-import jpcap.NetworkInterface;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -14,192 +13,184 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Enumeration;
 
+/**
+ *
+ * @author chenliang
+ * @email wschenliang@aliyun.com
+ */
 public class JpcapJFrame {
 
+    private static JpcapCaptor jpcapCaptor;
+    private static final Font GLOBAL_FONT = new Font("微软雅黑", Font.PLAIN, 20);
+    private static final String[] title = {"No.","Time","Source","Destination","Protocol","Length",
+            "帧类型","源物理地址","目标物理地址","源地址端口号","目的地址端口号","IPv","片偏移","数据包长度",
+            "生存时间","DF标志位","MF标志位","RF标志位","ack","ack_num","紧急指针","窗口大小","UDP包长度","序号",
+            "保留标志1","保留标志2","urg","ack","psh","rst","syn","fin","服务类型","分组标识","数据包二进制"};
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("抓包工具");
-        InitGlobalFont(new Font("微软雅黑", Font.PLAIN, 20));
-        frame.setSize(1300,900);
+        //设置主题
+        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+        try {
+            UIManager.setLookAndFeel(lookAndFeel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //设置窗体
+        JFrame frame = new JFrame("Wireshark");
+        InitGlobalFont();
+        frame.setSize(1500,1000);
         frame.setLayout(new BorderLayout());
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //设置面板 borderLayout分为东南西北中
+        JPanel mainPanel = new JPanel(new BorderLayout(2,2));
+        //顶部 采用流式面板，自动排版
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        topPanel.setBackground(Color.black);
 
-                System.exit(0);
-            }
-        });
-        Panel panel = new Panel(new BorderLayout());
-        Panel topPanel = new Panel(); //顶部开始，停止按钮布局
-        topPanel.setSize(90,400);
-        topPanel.setBackground(Color.darkGray);
-        topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        Button start = new Button("start");
-        start.setEnabled(false);
-        Button end = new Button("end");
-        NetworkInterface[] deviceList = JpcapCaptor.getDeviceList();
-        String[] deviceName = new String[deviceList.length+1];
-        deviceName[0] = "";
-        for (int i = 0; i < deviceList.length; i++) {
-            deviceName[i+1] = deviceList[i].name;
-        }
-        final JComboBox jComboBox = new JComboBox(deviceName);
-        start.setBounds(0,0,40,420);
-        end.setBounds(0,0,40,420);
-        String[] title = {"No.","Time","Source","Destination","Protocol","Length","帧类型","硬件信息","源物理地址","目标物理地址","源地址端口号","目的地址端口号","IPv","片偏移","数据包长度",
-                "生存时间","DF标志位","MF标志位","RF标志位","ack","ack_num","紧急指针","窗口大小","UDP包长度","序号","保留标志1","保留标志2","urg","ack","psh","rst","syn","fin","服务类型","分组标识","数据包二进制"};
-        String[][] testData = {
-
-        };
-        DefaultTableModel model = new DefaultTableModel(testData,title){
-            public boolean isCellEditable(int row,int column){
-                return false;
-            }
-        };
-        final JTable jtable = new JTable(model);
-        jtable.setRowHeight(25);
-        jtable.setSize(900,200);
-        jtable.setPreferredScrollableViewportSize(new Dimension(900,200));
+        //依次 单选框选择网卡，启动按钮，停止按钮，读取按钮，保存按钮
+        JButton startButton = new JButton("go");
+        startButton.setBackground(Color.GREEN);
+        //startButton.setIcon(new ImageIcon("image/close.svg"));
+        JButton stopButton = new JButton("stop");
+        stopButton.setBackground(Color.RED);
+        stopButton.setEnabled(false);//停止不可用
+        JButton readButton = new JButton("read");
+        JButton saveButton = new JButton("save");
+        JComboBox<String> deviceSelect = new JComboBox<>(JpcapUtil.getDeviceIp());
+        DefaultTableModel model = new DefaultTableModel(null, title);
+        JTable jtable = new JTable(model);
+        jtable.setRowHeight(25);//每条数据的单行高度
+        //jtable.setPreferredScrollableViewportSize(new Dimension(800,200));
+        //7-35数据不可见
         TableColumnModel columnModel = jtable.getColumnModel();
-        for (int i = 6; i <=35 ; i++) {
-            Invisible(columnModel.getColumn(i));
+        for (int i = 11; i <=34 ; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setMaxWidth(0);
+            column.setMinWidth(0);
+            column.setPreferredWidth(0);
         }
-        start.setEnabled(true);
-        start.addActionListener(new AbstractAction() {
+        //开始点击事件
+        startButton.addActionListener(new AbstractAction() {
+            private static final long serialVersionUID = -5422233935591297014L;
             @Override
             public void actionPerformed(ActionEvent e) {
-                startCap(jtable,jComboBox);
+                startButton.setEnabled(false);
+                stopButton.setEnabled(true);
+                DefaultTableModel model = (DefaultTableModel)jtable.getModel();
+                model.setRowCount(0);
+                String selectedItem = (String) deviceSelect.getSelectedItem();
+                jpcapCaptor = JpcapUtil.findCaptorByIp(selectedItem);
+                new Thread(new LoopCapThread(jpcapCaptor, jtable)).start();
             }
         });
-        end.addActionListener(new AbstractAction() {
+        //停止按钮监听
+        stopButton.addActionListener(new AbstractAction() {
+            private static final long serialVersionUID = 4447805863352575674L;
             @Override
             public void actionPerformed(ActionEvent e) {
-                stopCap();
+                startButton.setEnabled(true);
+                stopButton.setEnabled(false);
+                jpcapCaptor.breakLoop();
             }
         });
-        topPanel.add(start);
-        topPanel.add(end);
-        topPanel.add(jComboBox);
-        JScrollPane mid = new JScrollPane(jtable);
-        mid.setBackground(Color.BLACK);
+
+        //top层
+        topPanel.add(startButton);
+        topPanel.add(stopButton);
+        topPanel.add(readButton);
+        topPanel.add(saveButton);
+        topPanel.add(deviceSelect);
+
+        //mid层
+        JScrollPane midPane = new JScrollPane(jtable);
+        midPane.setBackground(Color.BLACK);
+
+        //底部层
         final JTextArea area = new JTextArea(10,50);
         JScrollPane buttom = new JScrollPane(area);
         buttom.setPreferredSize(new Dimension(500,400));
         JScrollBar verticalScrollBar = buttom.getVerticalScrollBar();
         verticalScrollBar.setValue(0);
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(mid,BorderLayout.CENTER);
-        panel.add(buttom,BorderLayout.SOUTH);
-        frame.setContentPane(panel);
-        panel.setVisible(true);
+        //布局管理容器添加上中下
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(midPane,BorderLayout.CENTER);
+        mainPanel.add(buttom,BorderLayout.SOUTH);
+
+        frame.setContentPane(mainPanel);
+        mainPanel.setVisible(true);
         frame.setVisible(true);
+
+        //设置表格，每次点击选择一个连续得范围
         jtable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        jtable.addMouseListener(new MouseAdapter() { //添加选中行监听
+        jtable.addMouseListener(new MouseAdapter() {//鼠标单机事件
             @Override
             public void mouseClicked(MouseEvent e) {
-                int selectedRow = jtable.getSelectedRow();
-                Object frame_type = jtable.getValueAt(selectedRow,6);
-                Object hardware_name = jtable.getValueAt(selectedRow,7);
-                Object SrchardAddress = jtable.getValueAt(selectedRow,8);
-                Object DsthardAddress = jtable.getValueAt(selectedRow,9);
-                Object SrcDuan = jtable.getValueAt(selectedRow,10);
-                Object DstDuan = jtable.getValueAt(selectedRow,11);
-                Object IPv = jtable.getValueAt(selectedRow,12);
-                Object Offset = jtable.getValueAt(selectedRow,13);
-                Object data_len = jtable.getValueAt(selectedRow,14);
-                Object TTL = jtable.getValueAt(selectedRow,15);
-                Object DF = jtable.getValueAt(selectedRow,16);
-                Object MF = jtable.getValueAt(selectedRow,17);
-                Object RF = jtable.getValueAt(selectedRow,18);
-                Object ack = jtable.getValueAt(selectedRow,19);
-                Object ack_num = jtable.getValueAt(selectedRow,20);
-                Object urgent_pointer = jtable.getValueAt(selectedRow,21);
-                Object window = jtable.getValueAt(selectedRow,22);
-                Object UDP_LEN = jtable.getValueAt(selectedRow,23);
-                Object Sequence = jtable.getValueAt(selectedRow,24);
-                Object rsv1 = jtable.getValueAt(selectedRow,25);
-                Object rsv2 = jtable.getValueAt(selectedRow,26);
-                Object urg = jtable.getValueAt(selectedRow,27);
-                Object ack2 = jtable.getValueAt(selectedRow,28);
-                Object psh= jtable.getValueAt(selectedRow,29);
-                Object rst = jtable.getValueAt(selectedRow,30);
-                Object syn = jtable.getValueAt(selectedRow,31);
-                Object fin = jtable.getValueAt(selectedRow,32);
-                Object rsv_tos = jtable.getValueAt(selectedRow,33);
-                Object ident = jtable.getValueAt(selectedRow,34);
-                Object bianry = jtable.getValueAt(selectedRow,35);
-                StringBuilder sb = new StringBuilder();
-                if (ack.equals("")){
-                     sb = new StringBuilder("          帧类型:" + frame_type + "\n          硬件信息:  " + hardware_name + "\n" +
-                             "          源物理地址:  " + SrchardAddress + "\n          目标物理地址: " + DsthardAddress + "\n------------------------------------------------------------------------\n    " +
-                             "      源地址端口号: " + SrcDuan + "\n          目的地址端口号:" + DstDuan + "\n          UDP包长度: " + UDP_LEN+"\n");
-                }else {
-                     sb = new StringBuilder("          帧类型:  " + frame_type + "\n          硬件信息:  " + hardware_name + "\n" +
-                             "          源物理地址:  " + SrchardAddress + "\n          目标物理地址: " + DsthardAddress + "\n--------------------------------------------------------------------------------\n      " +
-                             "    源地址端口号: " + SrcDuan + "\n           目的地址端口号:" + DstDuan + "\n          序号: " + Sequence + "\n          确认序号: " + ack_num
-                             + " \n          片偏移: "
-                             + Offset + "          保留标志1: " + rsv1 + "          保留标志2: " + rsv2 + "\n          URG标志: " + urg + "\n     " +
-                             "     ACK标志: " + ack + "\n          PSH标志: " + psh + "\n          RST标志: " + psh + "\n          SYN标志: " + syn + "\n          FIN标志: " + fin +
-                             "\n          窗口大小: " + window + "\n          紧急指针: " + urgent_pointer + "\n---------------------------------------------------------------------------------\n" + "\n    " +
-                             "      IPV" + IPv + "\n    " +
-                             "      服务类型: " + rsv_tos + "\n          数据包长度: " + data_len + "\n          分组标识" + ident + "\n          生存时间: " +
-                             TTL + "\n          DF标志位: " + DF + "\n          MF标志位: " + MF + "\n          RF标志位: " + RF+"\n");
-
-
+                String text = afterTableClick(jtable);
+                area.setText(text);
                 }
-                String binayArray = (String) bianry;
-                String[] split = binayArray.split(",");
-                for (int i = 0; i < split.length; i++) {
-                    if (!split[i].equals(" null")&&!split[i].equals(" null]]")&&!split[i].equals("[[null")) sb.append(split[i]);
-
-                    if (i%7==6) {
-                        sb.append("\n");
-                    }
-                }
-                String string = sb.toString();
-                string.replaceAll("\\[", "");
-                area.setText(string);
-
-            }
         });
-
     }
 
-    private static JpcapCaptor jpcapCaptor;
+    private static String afterTableClick(JTable jtable) {
+        int selectedRow = jtable.getSelectedRow();
+        Object ack = jtable.getValueAt(selectedRow, 18);
+        StringBuilder sb = new StringBuilder();
+        if (ack.equals("")) {
+            Object UDP_LEN = jtable.getValueAt(selectedRow, 22);
+            sb.append("\nUDP包长度: ").append(UDP_LEN);
+        } else {
+            Object IPv = jtable.getValueAt(selectedRow, 11);
+            Object Offset = jtable.getValueAt(selectedRow, 12);
+            Object data_len = jtable.getValueAt(selectedRow, 14);
+            Object TTL = jtable.getValueAt(selectedRow, 14);
+            Object DF = jtable.getValueAt(selectedRow, 15);
+            Object MF = jtable.getValueAt(selectedRow, 16);
+            Object RF = jtable.getValueAt(selectedRow, 17);
+            Object ack_num = jtable.getValueAt(selectedRow, 19);
+            Object urgent_pointer = jtable.getValueAt(selectedRow, 20);
+            Object window = jtable.getValueAt(selectedRow, 21);
+            Object Sequence = jtable.getValueAt(selectedRow, 23);
+            Object rsv1 = jtable.getValueAt(selectedRow, 24);
+            Object rsv2 = jtable.getValueAt(selectedRow, 25);
+            Object urg = jtable.getValueAt(selectedRow, 26);
+            Object psh = jtable.getValueAt(selectedRow, 28);
+            Object syn = jtable.getValueAt(selectedRow, 30);
+            Object fin = jtable.getValueAt(selectedRow, 31);
+            Object rsv_tos = jtable.getValueAt(selectedRow, 32);
+            Object ident = jtable.getValueAt(selectedRow, 33);
+            sb.append("\n序号:").append(Sequence)
+                    .append("\n确认序号:").append(ack_num)
+                    .append("\n片偏移:").append(Offset)
+                    .append("保留标志1: ").append(rsv1)
+                    .append("保留标志2: ").append(rsv2)
+                    .append("\nURG标志: ").append(urg)
+                    .append("\nACK标志: ").append(ack)
+                    .append("\nPSH标志: ").append(psh)
+                    .append("\nRST标志: ").append(psh)
+                    .append("\nSYN标志: ").append(syn)
+                    .append("\nFIN标志: ").append(fin)
+                    .append("\n窗口大小: ").append(window)
+                    .append("\n紧急指针: ").append(urgent_pointer)
+                    .append("\nIPV").append(IPv)
+                    .append("\n服务类型: ").append(rsv_tos)
+                    .append("\n数据包长度: ").append(data_len)
+                    .append("\n分组标识").append(ident)
+                    .append("\n生存时间: ").append(TTL)
+                    .append("\nDF标志位: ").append(DF)
+                    .append("\nMF标志位: ").append(MF)
+                    .append("\nRF标志位: ").append(RF);
 
-    private static void stopCap() {
-        jpcapCaptor.breakLoop();
-
-    }
-
-    private static void startCap(JTable jtable, JComboBox jComboBox) {
-        DefaultTableModel model = (DefaultTableModel)jtable.getModel();
-        model.setRowCount(0);
-        try{
-            //获取的网络接口对象数组
-            //分接口  源数据和协议分析 调整框体大小
-            Object selectedItem = jComboBox.getSelectedItem();
-            final  NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-            NetworkInterface device = null;
-            for(int i=0;i<devices.length;i++){
-                NetworkInterface nc=devices[i];
-                if (nc.name.equals(selectedItem)){
-                    device = nc;
-                    break;
-                }
-            }
-            if (device == null) {
-                return;
-            }
-            jpcapCaptor = JpcapCaptor.openDevice(device, 1000, true, 20);
-            new Thread(new LoopCapThread(jpcapCaptor, device, jtable)).start();
-        }catch(Exception ef){
-            ef.printStackTrace();
-            System.out.println("启动失败:  "+ef);
+            //二进制编码
+            Object bianry = jtable.getValueAt(selectedRow, 34);
+            String binayArray = (String) bianry;
+            sb.append("\n").append(binayArray);
         }
+        return sb.toString();
     }
 
-    private static void InitGlobalFont(Font font) {
-        FontUIResource fontRes = new FontUIResource(font);
+    private static void InitGlobalFont() {
+        FontUIResource fontRes = new FontUIResource(GLOBAL_FONT);
         for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
@@ -207,10 +198,5 @@ public class JpcapJFrame {
                 UIManager.put(key, fontRes);
             }
         }
-    }
-    public static void Invisible(TableColumn column){
-        column.setMaxWidth(0);
-        column.setMinWidth(0);
-        column.setPreferredWidth(0);
     }
 }

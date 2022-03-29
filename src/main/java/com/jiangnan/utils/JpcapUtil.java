@@ -144,4 +144,68 @@ public class JpcapUtil {
 
     }
 
+    public static String[] getDeviceIp() {
+        NetworkInterface[] deviceList = JpcapCaptor.getDeviceList();
+        String[] deviceIP = new String[deviceList.length];
+        for (int i = 0; i < deviceList.length; i++) {
+            NetworkInterfaceAddress[] addresses = deviceList[i].addresses;
+            String ipv4 = addresses[1].toString();
+            deviceIP[i] = ipv4.substring(ipv4.indexOf("/") + 1);
+        }
+        return deviceIP;
+    }
+
+    public static String[] getDeviceName() {
+        NetworkInterface[] deviceList = JpcapCaptor.getDeviceList();
+        String[] deviceName = new String[deviceList.length];
+        for (int i = 0; i < deviceList.length; i++) {
+            String name = deviceList[i].name;
+            deviceName[i] = name.substring(name.indexOf("{") + 1, name.length() - 1);
+        }
+        return deviceName;
+    }
+
+    public static JpcapCaptor findCaptorByName(String name) {
+        NetworkInterface device = findDeviceByName(name);
+        return getCaptor(device);
+    }
+
+    public static NetworkInterface findDeviceByName(String name) {
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
+        NetworkInterface[] devices = JpcapCaptor.getDeviceList();
+        NetworkInterface device = null;
+        for(int i=0; i < devices.length; i++){
+            if (devices[i].name.contains(name)){
+                device = devices[i];
+                break;
+            }
+        }
+        return device;
+    }
+
+    public static NetworkInterface findDeviceByIP(String IP) {
+        if (StringUtils.isBlank(IP)) {
+            return null;
+        }
+        NetworkInterface[] devices = JpcapCaptor.getDeviceList();
+        NetworkInterface device = null;
+        for(int i=0; i < devices.length; i++){
+            NetworkInterfaceAddress[] addresses = devices[i].addresses;
+            if (addresses[1].toString().contains(IP)){
+                device = devices[i];
+                break;
+            }
+        }
+        return device;
+    }
+
+    public static JpcapCaptor findCaptorByIp(String IP) {
+        NetworkInterface device = findDeviceByIP(IP);
+        if (device == null) {
+            return null;
+        }
+        return getCaptor(device);
+    }
 }

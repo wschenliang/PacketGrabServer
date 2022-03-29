@@ -1,6 +1,5 @@
 package com.jiangnan.receiver;
 
-import jpcap.NetworkInterface;
 import jpcap.packet.*;
 
 import javax.swing.*;
@@ -14,14 +13,13 @@ import java.util.Arrays;
  * @email wschenliang@aliyun.com
  */
 public class PacketReceiverImpl implements jpcap.PacketReceiver {
-    private static int number = 1; // 行编号
-    private static final long START_TIME = System.currentTimeMillis();
-    private DefaultTableModel jTable;
-    private NetworkInterface device;
+    private static int NUM = 1; // 行编号
+    private final DefaultTableModel jTable;
+    private final long startTime;
 
-    public PacketReceiverImpl(JTable jTable, NetworkInterface device) {
+    public PacketReceiverImpl(JTable jTable, long startTime) {
+        this.startTime = startTime;
         this.jTable = (DefaultTableModel) jTable.getModel();
-        this.device = device;
     }
 
     @Override
@@ -36,13 +34,12 @@ public class PacketReceiverImpl implements jpcap.PacketReceiver {
     }
 
     private void arpPacketHandle(ARPPacket p) {
-        //Returns the hardware address (MAC address) of the sender
-        Object  saa=   p.getSenderHardwareAddress();
-        Object  taa=p.getTargetHardwareAddress();
+        Object saa = p.getSenderHardwareAddress();
+        Object taa = p.getTargetHardwareAddress();
         String src = ((String)p.getSenderHardwareAddress()).substring(1);
         String dst = ((String)p.getTargetProtocolAddress()).substring(1);
-        jTable.addRow(new String[]{number+++"",(System.currentTimeMillis()-START_TIME)+"",src,dst,"ARP",p.len+""
-                ,device.name,saa+"",taa+"","","","","","","","","","","","","","","","","","","","","","","","","",""
+        jTable.addRow(new String[]{NUM+++"",(System.currentTimeMillis()-startTime)+"",src,dst,"ARP",p.len+""
+                ,saa+"",taa+"","","","","","","","","","","","","","","","","","","","","","","","","",""
         });
     }
 
@@ -65,8 +62,8 @@ public class PacketReceiverImpl implements jpcap.PacketReceiver {
             dataBianary[i/16][i%16] = string.toString();
 
         }
-        jTable.addRow(new String[]{number++ + "",(System.currentTimeMillis()-START_TIME)+"",src,dst,"UDP",p.len+"",
-                ethernetPacket.frametype + "",device.name,ethernetPacket.getDestinationAddress(),ethernetPacket.getSourceAddress(),p.src_port+"",p.dst_port+"",p.version+"",p.offset+"",
+        jTable.addRow(new String[]{NUM++ + "",(System.currentTimeMillis()-startTime)+"",src,dst,"UDP",p.len+"",
+                ethernetPacket.frametype + "",ethernetPacket.getDestinationAddress(),ethernetPacket.getSourceAddress(),p.src_port+"",p.dst_port+"",p.version+"",p.offset+"",
                 p.length+"",p.hop_limit+"",p.dont_frag+"",p.more_frag+"",p.rsv_frag+"","","","","",p.length+"","","","","","","","","","","", "",Arrays.deepToString(dataBianary),
         });
     }
@@ -90,8 +87,9 @@ public class PacketReceiverImpl implements jpcap.PacketReceiver {
             dataBianary[i/16][i%16] = string.toString();
 
         }
-        jTable.addRow(new String[]{number+++"",(System.currentTimeMillis()-START_TIME)+"",src,dst,"TCP",p.len+"", ethernetPacket.frametype + "",device.name,
-                ethernetPacket.getDestinationAddress(),ethernetPacket.getSourceAddress(),p.src_port+"",p.dst_port+"",p.version+"",p.offset+"",p.length+"",p.hop_limit+"",p.dont_frag+""
+        jTable.addRow(new String[]{NUM+++"",(System.currentTimeMillis()-startTime)+"",src,dst,"TCP",p.len+"", ethernetPacket.frametype + "",
+                ethernetPacket.getDestinationAddress(),ethernetPacket.getSourceAddress(),p.src_port+"",p.dst_port+"",
+                p.version+"",p.offset+"",p.length+"",p.hop_limit+"",p.dont_frag+""
                 ,p.more_frag+"",p.rsv_frag+"",p.ack+"",p.ack_num+"",p.urgent_pointer+"",p.window+"","",p.sequence+"",p.rsv1+"",p.rsv2+"",
                 p.urg+"",p.ack+"",p.psh+"",p.rst+"",p.syn+"",p.fin+"",p.rsv_tos+"",p.ident+"", Arrays.deepToString(dataBianary)
         });
