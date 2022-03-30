@@ -1,5 +1,7 @@
 package com.jiangnan.utils;
 
+import com.jiangnan.enums.Protocol;
+import com.jiangnan.model.PacketData;
 import jpcap.JpcapCaptor;
 import jpcap.JpcapWriter;
 import jpcap.packet.*;
@@ -154,4 +156,62 @@ public class PacketUtil {
         }
     }
 
+
+    private static int NUM = 1; // 行编号
+    private static long firstPacketUSec = 0;
+    private static long firstPacketSec = 0;
+
+    public static PacketData convertPacket2Data(Packet p) {
+        PacketData packetData = new PacketData();
+        String jsonInfo = FastjsonUtils.toJSONString(p);
+        packetData.setJsonInfo(jsonInfo);
+        if (p instanceof TCPPacket) {
+            tcpPacketHandle((TCPPacket) p, packetData);
+        } else if (p instanceof UDPPacket) {
+            udpPacketHandle((UDPPacket) p, packetData);
+        } else if (p instanceof ARPPacket) {
+            arpPacketHandle((ARPPacket) p, packetData);
+        }
+        packetData.setNum(NUM++);
+        //时间处理逻辑
+        if (firstPacketUSec == 0 && firstPacketSec == 0) {
+            firstPacketUSec = p.usec;
+            firstPacketSec = p.sec;
+            packetData.setSec("0.000000");
+        } else {
+            long gap = (p.sec - firstPacketSec) * 1000000 + (p.usec - firstPacketUSec);
+            String format = String.format("%.6f", gap * 0.000001);
+            packetData.setSec(format);
+        }
+        return packetData;
+    }
+
+    private static void tcpPacketHandle(TCPPacket p, PacketData packetData) {
+        packetData.setSrc(p.src_ip.toString())
+                .setDest(p.dst_ip.toString())
+                .setProtocol(Protocol.TCP)
+                .setLength(p.len);
+
+    }
+    private static void arpPacketHandle(ARPPacket p, PacketData packetData) {
+        packetData.setProtocol(Protocol.ARP);
+        Object senderProtocolAddress = p.getSenderProtocolAddress();
+        Object targetProtocolAddress = p.getTargetProtocolAddress();
+        packetData.setSrc(senderProtocolAddress.toString());
+        packetData.setDest(targetProtocolAddress.toString());
+    }
+
+    private static void udpPacketHandle(UDPPacket p, PacketData packetData) {
+        packetData.setSrc(p.src_ip.toString())
+                .setDest(p.dst_ip.toString())
+                .setProtocol(Protocol.UDP)
+                .setLength(p.len);
+    }
+
+    //初始化，将数据还原，这两个数据，一个为了记录自增序号，一个为了记录耗时
+    public static void init() {
+        NUM = 1;
+        firstPacketSec = 0;
+        firstPacketUSec = 0;
+    }
 }

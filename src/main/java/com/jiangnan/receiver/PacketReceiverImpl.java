@@ -1,7 +1,8 @@
 package com.jiangnan.receiver;
 
 import com.jiangnan.model.PacketData;
-import com.jiangnan.utils.ContextUtil;
+import com.jiangnan.model.PacketQueue;
+import com.jiangnan.utils.PacketUtil;
 import jpcap.packet.*;
 
 import javax.swing.table.DefaultTableModel;
@@ -13,21 +14,20 @@ import javax.swing.table.DefaultTableModel;
  * @email wschenliang@aliyun.com
  */
 public class PacketReceiverImpl implements jpcap.PacketReceiver {
-    private static int NUM = 1; // 行编号
-    private final DefaultTableModel model;
 
-    public PacketReceiverImpl(DefaultTableModel model) {
+    private final DefaultTableModel model;
+    private final PacketQueue queue;
+
+    public PacketReceiverImpl(DefaultTableModel model, PacketQueue queue) {
         this.model = model;
+        this.queue = queue;
     }
 
     @Override
     public void receivePacket(Packet p) {
-        long startTime = ContextUtil.getStartTime();
-        long time = System.currentTimeMillis() - startTime;//总共耗时
-        PacketData packetData = new PacketData(p);
-        packetData.setTime(time);
-        packetData.setNum(NUM++);
+        //每接收一个数据包都用于存放线程栈，便于保存
+        queue.addPacket(p);
+        PacketData packetData = PacketUtil.convertPacket2Data(p);
         model.addRow(packetData.getDataArrays());
-        ContextUtil.addPacketData(packetData);
     }
 }

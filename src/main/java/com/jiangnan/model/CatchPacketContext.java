@@ -15,12 +15,11 @@ public class CatchPacketContext {
     //网络接口
     private NetworkInterface device;
 
+    //捕获器数据
     private JpcapCaptor jpcapCaptor;
 
-    //开始时间
+    //线程2开始时间数据
     private long startTime;
-
-    private PacketData packetData;
 
     public CatchPacketContext(NetworkInterface device) {
         this.device = device;
@@ -42,13 +41,6 @@ public class CatchPacketContext {
         this.jpcapCaptor = jpcapCaptor;
     }
 
-    public PacketData getPacketData() {
-        return packetData;
-    }
-
-    public void setPacketData(PacketData packetData) {
-        this.packetData = packetData;
-    }
 
     public long getStartTime() {
         return startTime;
@@ -57,4 +49,5 @@ public class CatchPacketContext {
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
+
 }
