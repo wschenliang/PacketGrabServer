@@ -2,7 +2,6 @@ package com.jiangnan;
 
 import com.jiangnan.enums.Protocol;
 import jpcap.JpcapCaptor;
-import jpcap.JpcapSender;
 import jpcap.packet.Packet;
 import com.jiangnan.thread.AThread;
 import com.jiangnan.utils.JpcapUtil;

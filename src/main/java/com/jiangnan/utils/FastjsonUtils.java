@@ -3,6 +3,7 @@ package com.jiangnan.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.util.TypeUtils;
 
 import java.io.Serializable;
@@ -230,6 +231,10 @@ public class FastjsonUtils {
 
     public static <T extends Serializable> String toJSONString(T obj) {
         return JSONObject.toJSONString(obj);
+    }
+
+    public static <T extends Serializable> String toJSONStringPretty(T obj) {
+        return JSON.toJSONString(obj, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteDateUseDateFormat);
     }
 
     public static <T extends Serializable> byte[] toJSONByte(T obj) {

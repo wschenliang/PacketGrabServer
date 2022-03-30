@@ -163,7 +163,7 @@ public class PacketUtil {
 
     public static PacketData convertPacket2Data(Packet p) {
         PacketData packetData = new PacketData();
-        String jsonInfo = FastjsonUtils.toJSONString(p);
+        String jsonInfo = FastjsonUtils.toJSONStringPretty(p);
         packetData.setJsonInfo(jsonInfo);
         if (p instanceof TCPPacket) {
             tcpPacketHandle((TCPPacket) p, packetData);
