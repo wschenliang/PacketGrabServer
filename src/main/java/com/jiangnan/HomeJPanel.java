@@ -6,6 +6,7 @@ import com.jiangnan.model.PacketQueue;
 import com.jiangnan.receiver.PacketReceiverImpl;
 import com.jiangnan.utils.JpcapUtil;
 import com.jiangnan.utils.PacketUtil;
+import com.jiangnan.utils.StringUtils;
 import jpcap.JpcapCaptor;
 import jpcap.JpcapWriter;
 import jpcap.NetworkInterface;
@@ -29,9 +30,10 @@ import java.util.LinkedList;
  * @email wschenliang@aliyun.com
  */
 public class HomeJPanel extends JPanel {
-
+    private static String selectIp;
     private static JpcapCaptor captor = null;
     private static final PacketQueue queue = new PacketQueue();
+    private static final Font GLOBAL_FONT = new Font("微软雅黑", Font.PLAIN, 15);
 
     public HomeJPanel(JFrame jFrame) {
         //设置面板 borderLayout分为东南西北中
@@ -43,20 +45,22 @@ public class HomeJPanel extends JPanel {
         JButton restartButton = getRestartButton();//重启按钮
         JButton optionButton = getOptionButton();//设置按钮
         JButton clearButton = getClearButton();//清除按钮
-        JComboBox<String> deviceSelect = new JComboBox<>(JpcapUtil.getDeviceIp());//网卡选择框
+        JLabel infoLabel = getInfoLabel();//信息标签
+        //JComboBox<String> deviceSelect = new JComboBox<>(JpcapUtil.getDeviceIp());//网卡选择框
         JTable jtable = getJTable();//表格
         JTextArea area = getInfoArea();
         JTextArea area2 = getArea2();
 
-        startButtonAction(startButton, stopButton, jtable, deviceSelect);//开始按钮点击事件
+        startButtonAction(startButton, stopButton, jtable);//开始按钮点击事件
         stopButtonAction(startButton,stopButton,jtable,saveButton);//停止按钮点击事件
         readButtonAction(readButton, jFrame, jtable);//读取按钮添加事件
         saveButtonAction(saveButton, jFrame);//保存按钮添加事件
+        optionButtonAction(optionButton, jFrame, infoLabel);//设置按钮添加事件
         jTableAction(jtable, area);
 
         //上top层 添加按钮和网卡选择框
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBackground(Color.black);
+        topPanel.setBackground(Color.WHITE);
         topPanel.add(startButton);
         topPanel.add(stopButton);
         topPanel.add(restartButton);
@@ -64,7 +68,8 @@ public class HomeJPanel extends JPanel {
         topPanel.add(readButton);
         topPanel.add(saveButton);
         topPanel.add(clearButton);
-        topPanel.add(deviceSelect);
+        topPanel.add(infoLabel);
+        //topPanel.add(deviceSelect);
 
         //mid层 添加表格
         JScrollPane midPanel = new JScrollPane(jtable);
@@ -83,6 +88,34 @@ public class HomeJPanel extends JPanel {
         this.add(bottomPanel,BorderLayout.SOUTH);
         this.add(rightPanel, BorderLayout.EAST);
         this.setVisible(true);
+    }
+
+    private JLabel getInfoLabel() {
+        JLabel jLabel = new JLabel();
+        if (StringUtils.isBlank(selectIp)) {
+            jLabel.setText("请选择网卡设备");
+        } else {
+            jLabel.setText(selectIp);
+        }
+        jLabel.setFont(GLOBAL_FONT);
+        jLabel.setBackground(Color.RED);
+        return jLabel;
+    }
+
+    //设置按钮点击事件
+    private void optionButtonAction(JButton optionButton, JFrame jFrame,  JLabel infoLabel) {
+        optionButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] deviceIp = JpcapUtil.getDeviceIp();
+                String defaultSelect = deviceIp[0];
+                if (StringUtils.isNotBlank(selectIp)) {
+                    defaultSelect = selectIp;
+                }
+                selectIp = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceIp, defaultSelect);
+                infoLabel.setText(selectIp);
+            }
+        });
     }
 
     //获取侧边文本域
@@ -217,7 +250,7 @@ public class HomeJPanel extends JPanel {
     }
 
     //开始按钮的点击事件
-    private void startButtonAction(JButton startButton, JButton stopButton, JTable jtable, JComboBox<String> deviceSelect) {
+    private void startButtonAction(JButton startButton, JButton stopButton, JTable jtable) {
         startButton.addActionListener(new AbstractAction() {
             private static final long serialVersionUID = -5422233935591297014L;
             @Override
@@ -228,9 +261,7 @@ public class HomeJPanel extends JPanel {
                 //数据清空启动
                 model.setRowCount(0);
                 PacketUtil.init();
-                //根据选择的网卡名称，来启动对应网卡的监听
-                String selectedItem = (String) deviceSelect.getSelectedItem();
-                NetworkInterface device = JpcapUtil.findDeviceByIP(selectedItem);
+                NetworkInterface device = JpcapUtil.findDeviceByIP(selectIp);
                 captor = JpcapUtil.getCaptor(device);
                 //开启线程2执行循环监听捕获数据，注意线程2是无法使用线程1的本地线程栈内容的，因此，想要保存数据得传递过去
                 new Thread(() -> captor.loopPacket(-1, new PacketReceiverImpl(model, queue))).start();
@@ -256,8 +287,13 @@ public class HomeJPanel extends JPanel {
     private JButton getSaveButton() {
         JButton jButton = new JButton();
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_save.png"));
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
         jButton.setEnabled(false);//停止不可用
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         return jButton;
     }
 
@@ -265,7 +301,12 @@ public class HomeJPanel extends JPanel {
     private JButton getReadButton() {
         JButton jButton = new JButton();
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_open.png"));
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         return jButton;
     }
 
@@ -273,7 +314,12 @@ public class HomeJPanel extends JPanel {
     private JButton getStopButton() {
         JButton jButton = new JButton();
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_stop.png"));
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         jButton.setEnabled(false);//停止不可用
         return jButton;
     }
@@ -281,7 +327,12 @@ public class HomeJPanel extends JPanel {
     //开始按钮配置
     private JButton getStartButton() {
         JButton jButton = new JButton();
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_start.png"));
         return jButton;
     }
@@ -289,8 +340,13 @@ public class HomeJPanel extends JPanel {
     //重启按钮配置
     private JButton getRestartButton() {
         JButton jButton = new JButton();
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
         jButton.setEnabled(false);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_restart.png"));
         return jButton;
     }
@@ -298,7 +354,12 @@ public class HomeJPanel extends JPanel {
     //设置按钮配置
     private JButton getOptionButton() {
         JButton jButton = new JButton();
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_options.png"));
         return jButton;
     }
@@ -306,8 +367,13 @@ public class HomeJPanel extends JPanel {
     //清除按钮配置
     private JButton getClearButton() {
         JButton jButton = new JButton();
-        jButton.setBackground(Color.BLACK);
+        jButton.setBackground(Color.WHITE);
         jButton.setEnabled(false);
+        jButton.setBorderPainted(false);//不打印边框
+        jButton.setBorder(null);//除去边框
+        jButton.setFocusPainted(false);//除去焦点边框
+        jButton.setContentAreaFilled(false);//除去默认填充
+        jButton.setMargin(new Insets(0,0,0,0));
         jButton.setIcon(new ImageIcon("src/main/resources/image/wireshark_close.png"));
         return jButton;
     }
