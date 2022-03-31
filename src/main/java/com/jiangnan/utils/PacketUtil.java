@@ -2,6 +2,7 @@ package com.jiangnan.utils;
 
 import com.jiangnan.enums.Protocol;
 import com.jiangnan.model.PacketData;
+import com.jiangnan.model.PacketQueue;
 import jpcap.JpcapCaptor;
 import jpcap.JpcapWriter;
 import jpcap.packet.*;
@@ -213,5 +214,6 @@ public class PacketUtil {
         NUM = 1;
         firstPacketSec = 0;
         firstPacketUSec = 0;
+        PacketQueue.clear();
     }
 }

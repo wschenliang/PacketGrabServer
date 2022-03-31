@@ -24,4 +24,8 @@ public class PacketQueue implements Serializable {
     public static LinkedList<Packet> getPackets() {
         return packets;
     }
+
+    public static void clear() {
+        packets.clear();
+    }
 }

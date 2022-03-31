@@ -187,11 +187,6 @@ public class JpcapUtil {
     }
 
     public static NetworkInterface findDeviceByIP(String IP) {
-        if (StringUtils.isBlank(IP)) {
-            //未选择ip
-            System.out.println("启动失败，未设置网卡设备");
-            return null;
-        }
         NetworkInterface[] devices = JpcapCaptor.getDeviceList();
         NetworkInterface device = null;
         for(int i=0; i < devices.length; i++){

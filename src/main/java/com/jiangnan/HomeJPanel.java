@@ -6,6 +6,7 @@ import com.jiangnan.model.PacketData;
 import com.jiangnan.model.PacketQueue;
 import com.jiangnan.receiver.PacketReceiverImpl;
 import com.jiangnan.utils.JpcapUtil;
+import com.jiangnan.utils.LogUtils;
 import com.jiangnan.utils.PacketUtil;
 import com.jiangnan.utils.StringUtils;
 import jpcap.JpcapCaptor;
@@ -39,13 +40,14 @@ public class HomeJPanel extends JPanel {
     private final JButton startButton, stopButton, openButton, saveButton, restartButton, optionButton, clearButton;
     private final JLabel infoLabel;
     private final JTable jTable;
-    private final JTextArea area, area2;
+    private final JTextArea infoArea, logArea;
 
 
     public HomeJPanel(JFrame jFrame) {
         this.jFrame = jFrame;
-        //设置面板 borderLayout分为东南西北中
-        this.setLayout(new BorderLayout(2,2));
+        this.setLayout(new BorderLayout(2,2));//设置面板 borderLayout分为东南西北中
+
+        //----------------------------------顶部按钮和标签------------------------------------------------------------
         startButton = getStartButton();//开始按钮
         stopButton = getStopButton();//停止按钮
         openButton = getOpenButton();//读取按钮
@@ -54,18 +56,29 @@ public class HomeJPanel extends JPanel {
         optionButton = getOptionButton();//设置按钮
         clearButton = getClearButton();//清除按钮
         infoLabel = getInfoLabel();//信息标签
-        jTable = getJTable();//表格
-        area = getInfoArea();//底部输出文本域
-        area2 = getArea2();//侧面输出文本域
 
+        //-----------------------------------中间表格-----------------------------------------------------------
+        jTable = getJTable();//表格
+
+        //----------------------------------------------------------------------------------------------
+        infoArea = getInfoArea();//底部输出文本域
+
+        //----------------------------------------------------------------------------------------------
+        logArea = getLogArea();//侧面输出文本域
+
+        //--------------------------------------点击事件--------------------------------------------------------
+        updateInfoLabel();//更新标签信息
         startButtonAction();//开始按钮点击事件
         stopButtonAction();//停止按钮点击事件
         openButtonAction();//读取按钮添加事件
         saveButtonAction();//保存按钮添加事件
         optionButtonAction();//设置按钮添加事件
+        restartButtonAction();//重启按钮点击事件
+        clearButtonAction();//清除按钮点击事件
         jTableAction();//表格点击事件
-        updateInfoLabel();
+        infoLabelAction();//label标签点击事件
 
+        //----------------------------------------------------------------------------------------------
         topPanel = getTopPanel(); //顶部区域
         midPanel = getMidPanel();//中间区域
         bottomPanel = getBottomPanel();//底部区域
@@ -79,8 +92,38 @@ public class HomeJPanel extends JPanel {
         this.setVisible(true);
     }
 
+    private void infoLabelAction() {
+        infoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String[] deviceIp = JpcapUtil.getDeviceIp();
+                String defaultSelect = deviceIp[0];
+                if (StringUtils.isNotBlank(selectIp)) {
+                    defaultSelect = selectIp;
+                }
+                selectIp = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceIp, defaultSelect);
+                updateInfoLabel();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                infoLabel.setBackground(new Color(186,186,186));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                updateInfoLabel();
+            }
+        });
+    }
+
+    private void log(String text){
+        logArea.append("\n");
+        logArea.append(text);
+    }
+
     private JScrollPane getRightPanel() {
-        JScrollPane jScrollPane = new JScrollPane(area2);
+        JScrollPane jScrollPane = new JScrollPane(logArea);
         jScrollPane.setPreferredSize(new Dimension(200, 200));
         return jScrollPane;
     }
@@ -91,7 +134,7 @@ public class HomeJPanel extends JPanel {
 
     //bottomPanel设置
     private JScrollPane getBottomPanel() {
-        JScrollPane jScrollPane = new JScrollPane(area);
+        JScrollPane jScrollPane = new JScrollPane(infoArea);
         jScrollPane.setPreferredSize(new Dimension(400,400));
         jScrollPane.getVerticalScrollBar().setValue(0);
         return jScrollPane;
@@ -116,15 +159,17 @@ public class HomeJPanel extends JPanel {
     private void updateInfoLabel() {
         if (StringUtils.isBlank(selectIp)) {
             infoLabel.setText("未设置网卡");
+            infoLabel.setBackground(new Color(255,182,182));
         } else {
             infoLabel.setText(selectIp);
+            infoLabel.setBackground(new Color(176,255,206));
         }
     }
 
     private JLabel getInfoLabel() {
         JLabel jLabel = new JLabel();
-        jLabel.setFont(new Font("黑体", Font.PLAIN, 15));
-        jLabel.setBackground(Color.RED);
+        jLabel.setFont(new Font("黑体", Font.PLAIN, 17));
+        jLabel.setOpaque(true);//设置不透明，只有这样才能添加背景色
         return jLabel;
     }
 
@@ -145,13 +190,14 @@ public class HomeJPanel extends JPanel {
     }
 
     //获取侧边文本域
-    private JTextArea getArea2() {
-        JTextArea jTextArea = new JTextArea() {
+    private JTextArea getLogArea() {
+        JTextArea jTextArea = new JTextArea("log:") {
             @Override
             public boolean isEditable() {
                 return false;
             }
         };
+        jTextArea.setFont(new Font("微软雅黑", Font.PLAIN, 15));
         jTextArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));//设置鼠标变为文本鼠标
         return jTextArea;
     }
@@ -164,6 +210,7 @@ public class HomeJPanel extends JPanel {
                 return false;
             }
         };
+        jTextArea.setFont(new Font("黑体", Font.PLAIN, 15));
         jTextArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));//设置鼠标变为文本鼠标
         jTextArea.setBackground(Color.LIGHT_GRAY);
         return jTextArea;
@@ -178,7 +225,7 @@ public class HomeJPanel extends JPanel {
                 int selectedRow = jTable.getSelectedRow();
                 Object jsonInfo = jTable.getValueAt(selectedRow, 6);
                 String text = jsonInfo.toString();
-                area.setText("info: \n" + text);
+                infoArea.setText("info: \n" + text);
             }
         });
     }
@@ -194,6 +241,7 @@ public class HomeJPanel extends JPanel {
                 fileChooser.addChoosableFileFilter(new PcapFileFilter());
                 int val = fileChooser.showSaveDialog(jFrame);
                 if (val != JFileChooser.APPROVE_OPTION) {
+                    log("保存文件取消");
                     return;
                 }
                 File file = fileChooser.getSelectedFile();
@@ -210,6 +258,7 @@ public class HomeJPanel extends JPanel {
                 } catch (IOException exception) {
                     System.out.println(exception.getCause().toString());
                 }finally {
+                    log("保存文件成功");
                     if (writer != null) {
                         writer.close();//注意，调用close方法程序会自动关闭
                     }
@@ -231,6 +280,7 @@ public class HomeJPanel extends JPanel {
                 fileChooser.addChoosableFileFilter(new PcapFileFilter());
                 int val = fileChooser.showOpenDialog(jFrame);
                 if (val != JFileChooser.APPROVE_OPTION) {
+                    log("打开文件取消");
                     return;
                 }
                 File file = fileChooser.getSelectedFile();
@@ -251,6 +301,24 @@ public class HomeJPanel extends JPanel {
                     PacketData packetData = PacketUtil.convertPacket2Data(packet);
                     model.addRow(packetData.getDataArrays());
                 }
+                if (model.getRowCount() > 0) {
+                    clearButton.setEnabled(true);//可以清除
+                }
+                log("读取文件成功");
+            }
+        });
+
+    }
+
+    //清除按钮点击事件
+    private void clearButtonAction() {
+        clearButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+                model.setRowCount(0);
+                PacketUtil.init();
+                saveButton.setEnabled(false);//点击清除按钮，保存按钮就失效了
             }
         });
     }
@@ -263,9 +331,13 @@ public class HomeJPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 startButton.setEnabled(true);
                 stopButton.setEnabled(false);
-                if (captor != null) {
-                    captor.breakLoop();
+                openButton.setEnabled(true);//停止可以打开文件
+                clearButton.setEnabled(true);//停止可以清除文件
+                if (captor == null) {
+                    LogUtils.log("captor为null");
+                    return;
                 }
+                captor.breakLoop();
                 DefaultTableModel model = (DefaultTableModel) jTable.getModel();
                 //判断有没有数据，如果有数据，保存按钮要亮起来
                 if (model.getRowCount() > 0) {
@@ -273,8 +345,51 @@ public class HomeJPanel extends JPanel {
                     restartButton.setEnabled(true);
                     clearButton.setEnabled(true);
                 }
+                log("停止");
             }
         });
+
+    }
+
+    //重启按钮点击事件
+    private void restartButtonAction() {
+        restartButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log("重启中...");
+
+                start();
+            }
+        });
+    }
+
+    private void start() {
+        log("启动中...");
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        restartButton.setEnabled(false);
+        saveButton.setEnabled(false);
+        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+        //数据清空启动
+        model.setRowCount(0);
+        PacketUtil.init();
+        if (selectIp == null) {
+            //未选择ip
+            log("启动失败，未设置网卡设备");
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            return;
+        }
+        openButton.setEnabled(false);//打开文件按钮失效
+        clearButton.setEnabled(false);//清除按钮失效
+        NetworkInterface device = JpcapUtil.findDeviceByIP(selectIp);
+        if (device == null) {
+            return;
+        }
+        captor = JpcapUtil.getCaptor(device);
+        //开启线程2执行循环监听捕获数据，注意线程2是无法使用线程1的本地线程栈内容的，因此，想要保存数据得传递过去
+        new Thread(() -> captor.loopPacket(-1, new PacketReceiverImpl(model))).start();
+        log("启动成功");
     }
 
     //开始按钮的点击事件
@@ -283,19 +398,7 @@ public class HomeJPanel extends JPanel {
             private static final long serialVersionUID = -5422233935591297014L;
             @Override
             public void actionPerformed(ActionEvent e) {
-                startButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                DefaultTableModel model = (DefaultTableModel) jTable.getModel();
-                //数据清空启动
-                model.setRowCount(0);
-                PacketUtil.init();
-                NetworkInterface device = JpcapUtil.findDeviceByIP(selectIp);
-                if (device == null) {
-                    return;
-                }
-                captor = JpcapUtil.getCaptor(device);
-                //开启线程2执行循环监听捕获数据，注意线程2是无法使用线程1的本地线程栈内容的，因此，想要保存数据得传递过去
-                new Thread(() -> captor.loopPacket(-1, new PacketReceiverImpl(model))).start();
+                start();
             }
         });
     }
