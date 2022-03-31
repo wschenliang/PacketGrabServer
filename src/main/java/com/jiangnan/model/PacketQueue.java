@@ -15,17 +15,13 @@ import java.util.LinkedList;
 public class PacketQueue implements Serializable {
     private static final long serialVersionUID = 7057534927419848726L;
 
-    private final LinkedList<Packet> packets;
+    private static final LinkedList<Packet> packets = new LinkedList<>();
 
-    public PacketQueue() {
-        packets = new LinkedList<>();
-    }
-
-    public void addPacket(Packet p) {
+    public static void addPacket(Packet p) {
         packets.add(p);
     }
 
-    public LinkedList<Packet> getPackets() {
+    public static LinkedList<Packet> getPackets() {
         return packets;
     }
 }

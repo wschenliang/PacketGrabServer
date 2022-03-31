@@ -16,17 +16,14 @@ import javax.swing.table.DefaultTableModel;
 public class PacketReceiverImpl implements jpcap.PacketReceiver {
 
     private final DefaultTableModel model;
-    private final PacketQueue queue;
 
-    public PacketReceiverImpl(DefaultTableModel model, PacketQueue queue) {
+    public PacketReceiverImpl(DefaultTableModel model) {
         this.model = model;
-        this.queue = queue;
     }
 
     @Override
     public void receivePacket(Packet p) {
-        //每接收一个数据包都用于存放线程栈，便于保存
-        queue.addPacket(p);
+        PacketQueue.addPacket(p);//每接收一个数据包都用于存放
         PacketData packetData = PacketUtil.convertPacket2Data(p);
         model.addRow(packetData.getDataArrays());
     }

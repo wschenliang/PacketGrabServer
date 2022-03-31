@@ -1,5 +1,7 @@
 package com.jiangnan;
 
+import com.jiangnan.constants.IconUtils;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,9 +13,10 @@ import java.awt.*;
  */
 public class JpcapJFrame extends JFrame {
 
+
     public JpcapJFrame() throws HeadlessException {
         //设置图标
-        this.setIconImage(new ImageIcon("src/main/resources/image/wireshark_start.png").getImage());
+        this.setIconImage(IconUtils.mainIcon().getImage());
         //设置主题
         String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
@@ -25,14 +28,21 @@ public class JpcapJFrame extends JFrame {
         this.setSize(1200,1000);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //homeJPanel
+        HomeJPanel homePanel = new HomeJPanel(this);
+        //homeJMenuBar
+        HomeJMenuBar homeJMenuBar = new HomeJMenuBar(this, homePanel);
+
+        this.setContentPane(homePanel);
+        this.setJMenuBar(homeJMenuBar);
+
+        this.setVisible(true);
+
     }
 
     //启动入口
     public static void main(String[] args) {
-        JFrame jf = new JpcapJFrame();
-        jf.setJMenuBar(new HomeJMenuBar(jf));
-        JPanel mainPanel = new HomeJPanel(jf);
-        jf.setContentPane(mainPanel);
-        jf.setVisible(true);
+        new JpcapJFrame();
     }
 }

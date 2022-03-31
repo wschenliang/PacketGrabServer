@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * 该类用于将捕获的包保存到文件中。
  */
-public class JpcapWriter {
+public class JpcapWriter implements AutoCloseable{
     private native String nativeOpenDumpFile(String filename, int ID);
 
     private JpcapWriter(JpcapCaptor jpcap, String filename)
@@ -31,7 +31,7 @@ public class JpcapWriter {
     }
 
     /**
-     * 关闭打开文件
+     * 关闭打开文件， 但是调用该方法程序会自动退出
      */
     public native void close();
 

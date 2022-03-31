@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 /**
+ *  Jpcap工具类
  *
  * @author chenliang
  * @email wschenliang@aliyun.com
@@ -187,6 +188,8 @@ public class JpcapUtil {
 
     public static NetworkInterface findDeviceByIP(String IP) {
         if (StringUtils.isBlank(IP)) {
+            //未选择ip
+            System.out.println("启动失败，未设置网卡设备");
             return null;
         }
         NetworkInterface[] devices = JpcapCaptor.getDeviceList();
