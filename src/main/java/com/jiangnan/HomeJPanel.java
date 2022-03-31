@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * @email wschenliang@aliyun.com
  */
 public class HomeJPanel extends JPanel {
-    private static String selectIp;
+    private static String selectDeviceName;
     private JpcapCaptor captor = null;
     private final IconUtils iconUtils = new IconUtils();
     private final JFrame jFrame;
@@ -97,12 +97,12 @@ public class HomeJPanel extends JPanel {
         infoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] deviceIp = JpcapUtil.getDeviceIp();
-                String defaultSelect = deviceIp[0];
-                if (StringUtils.isNotBlank(selectIp)) {
-                    defaultSelect = selectIp;
+                String[] deviceName = JpcapUtil.getDeviceName();
+                String defaultSelect = deviceName[0];
+                if (StringUtils.isNotBlank(selectDeviceName)) {
+                    defaultSelect = selectDeviceName;
                 }
-                selectIp = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceIp, defaultSelect);
+                selectDeviceName = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceName, defaultSelect);
                 updateInfoLabel();
             }
 
@@ -158,11 +158,11 @@ public class HomeJPanel extends JPanel {
 
     //更新infoLabel
     private void updateInfoLabel() {
-        if (StringUtils.isBlank(selectIp)) {
+        if (StringUtils.isBlank(selectDeviceName)) {
             infoLabel.setText("未设置网卡");
             infoLabel.setBackground(new Color(255,182,182));
         } else {
-            infoLabel.setText(selectIp);
+            infoLabel.setText(selectDeviceName);
             infoLabel.setBackground(new Color(176,255,206));
         }
     }
@@ -179,12 +179,12 @@ public class HomeJPanel extends JPanel {
         optionButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] deviceIp = JpcapUtil.getDeviceIp();
-                String defaultSelect = deviceIp[0];
-                if (StringUtils.isNotBlank(selectIp)) {
-                    defaultSelect = selectIp;
+                String[] deviceName = JpcapUtil.getDeviceName();
+                String defaultSelect = deviceName[0];
+                if (StringUtils.isNotBlank(selectDeviceName)) {
+                    defaultSelect = selectDeviceName;
                 }
-                selectIp = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceIp, defaultSelect);
+                selectDeviceName = (String) JOptionPane.showInputDialog(jFrame,  "设备ip", "请选择网卡设备",1, null, deviceName, defaultSelect);
                 updateInfoLabel();
             }
         });
@@ -373,7 +373,7 @@ public class HomeJPanel extends JPanel {
         //数据清空启动
         model.setRowCount(0);
         PacketUtil.init();
-        if (selectIp == null) {
+        if (selectDeviceName == null) {
             //未选择ip
             log("启动失败，未设置网卡设备");
             startButton.setEnabled(true);
@@ -382,7 +382,7 @@ public class HomeJPanel extends JPanel {
         }
         openButton.setEnabled(false);//打开文件按钮失效
         clearButton.setEnabled(false);//清除按钮失效
-        NetworkInterface device = JpcapUtil.findDeviceByIP(selectIp);
+        NetworkInterface device = JpcapUtil.findDeviceByName(selectDeviceName);
         if (device == null) {
             return;
         }
