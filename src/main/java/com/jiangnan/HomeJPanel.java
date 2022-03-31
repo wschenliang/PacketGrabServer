@@ -34,6 +34,7 @@ import java.util.LinkedList;
 public class HomeJPanel extends JPanel {
     private static String selectIp;
     private JpcapCaptor captor = null;
+    private IconUtils iconUtils = new IconUtils();
     private final JFrame jFrame;
     private final JPanel topPanel;
     private final JScrollPane midPanel, bottomPanel, rightPanel;
@@ -420,7 +421,7 @@ public class HomeJPanel extends JPanel {
     //保存按钮配置
     private JButton getSaveButton() {
         JButton jButton = new JButton();
-        jButton.setIcon(IconUtils.saveIcon());
+        jButton.setIcon(iconUtils.saveIcon());
         jButton.setBackground(Color.WHITE);
         jButton.setToolTipText("保存");
         jButton.setEnabled(false);//停止不可用
@@ -435,7 +436,7 @@ public class HomeJPanel extends JPanel {
     //读取按钮配置
     private JButton getOpenButton() {
         JButton jButton = new JButton();
-        jButton.setIcon(IconUtils.openIcon());
+        jButton.setIcon(iconUtils.openIcon());
         jButton.setBackground(Color.WHITE);
         jButton.setToolTipText("打开");
         jButton.setBorderPainted(false);//不打印边框
@@ -449,7 +450,7 @@ public class HomeJPanel extends JPanel {
     //停止按钮配置
     private JButton getStopButton() {
         JButton jButton = new JButton();
-        jButton.setIcon(IconUtils.stopIcon());
+        jButton.setIcon(iconUtils.stopIcon());
         jButton.setBackground(Color.WHITE);
         jButton.setToolTipText("停止");
         jButton.setBorderPainted(false);//不打印边框
@@ -471,7 +472,7 @@ public class HomeJPanel extends JPanel {
         jButton.setFocusPainted(false);//除去焦点边框
         jButton.setContentAreaFilled(false);//除去默认填充
         jButton.setMargin(new Insets(0,0,0,0));
-        jButton.setIcon(IconUtils.startIcon());
+        jButton.setIcon(iconUtils.startIcon());
         return jButton;
     }
 
@@ -486,7 +487,7 @@ public class HomeJPanel extends JPanel {
         jButton.setFocusPainted(false);//除去焦点边框
         jButton.setContentAreaFilled(false);//除去默认填充
         jButton.setMargin(new Insets(0,0,0,0));
-        jButton.setIcon(IconUtils.restartIcon());
+        jButton.setIcon(iconUtils.restartIcon());
         return jButton;
     }
 
@@ -500,7 +501,7 @@ public class HomeJPanel extends JPanel {
         jButton.setFocusPainted(false);//除去焦点边框
         jButton.setContentAreaFilled(false);//除去默认填充
         jButton.setMargin(new Insets(0,0,0,0));
-        jButton.setIcon(IconUtils.optionsIcon());
+        jButton.setIcon(iconUtils.optionsIcon());
         return jButton;
     }
 
@@ -515,7 +516,7 @@ public class HomeJPanel extends JPanel {
         jButton.setFocusPainted(false);//除去焦点边框
         jButton.setContentAreaFilled(false);//除去默认填充
         jButton.setMargin(new Insets(0,0,0,0));
-        jButton.setIcon(IconUtils.closeIcon());
+        jButton.setIcon(iconUtils.closeIcon());
         return jButton;
     }
 

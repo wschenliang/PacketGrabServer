@@ -4,6 +4,7 @@ import com.jiangnan.constants.IconUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 /**
  *  启动框架
@@ -13,10 +14,9 @@ import java.awt.*;
  */
 public class JpcapJFrame extends JFrame {
 
-
     public JpcapJFrame() throws HeadlessException {
         //设置图标
-        this.setIconImage(IconUtils.mainIcon().getImage());
+        this.setIconImage(new IconUtils().mainIcon().getImage());
         //设置主题
         String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
         try {
