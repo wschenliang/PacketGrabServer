@@ -23,6 +23,9 @@ public class PacketReceiverImpl implements jpcap.PacketReceiver {
 
     @Override
     public void receivePacket(Packet p) {
+        if (p == null || p.data == null) {
+            return;
+        }
         PacketQueue.addPacket(p);//每接收一个数据包都用于存放
         PacketData packetData = PacketUtil.convertPacket2Data(p);
         model.addRow(packetData.getDataArrays());

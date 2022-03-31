@@ -34,7 +34,7 @@ import java.util.LinkedList;
 public class HomeJPanel extends JPanel {
     private static String selectIp;
     private JpcapCaptor captor = null;
-    private IconUtils iconUtils = new IconUtils();
+    private final IconUtils iconUtils = new IconUtils();
     private final JFrame jFrame;
     private final JPanel topPanel;
     private final JScrollPane midPanel, bottomPanel, rightPanel;
@@ -333,7 +333,6 @@ public class HomeJPanel extends JPanel {
                 startButton.setEnabled(true);
                 stopButton.setEnabled(false);
                 openButton.setEnabled(true);//停止可以打开文件
-                clearButton.setEnabled(true);//停止可以清除文件
                 if (captor == null) {
                     LogUtils.log("captor为null");
                     return;
