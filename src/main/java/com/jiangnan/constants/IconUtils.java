@@ -9,14 +9,14 @@ import javax.swing.*;
  */
 public class IconUtils {
 
-    public static final String MAIN_ICON = "src/main/resources/image/wireshark.png";
-    public static final String START = "src/main/resources/image/wireshark_start.png";
-    public static final String STOP = "src/main/resources/image/wireshark_stop.png";
-    public static final String SAVE = "src/main/resources/image/wireshark_save.png";
-    public static final String OPEN = "src/main/resources/image/wireshark_open.png";
-    public static final String OPTIONS = "src/main/resources/image/wireshark_options.png";
-    public static final String CLOSE = "src/main/resources/image/wireshark_close.png";
-    public static final String RESTART = "src/main/resources/image/wireshark_restart.png";
+    public static final String MAIN_ICON = "src/main/java/image/wireshark.png";
+    public static final String START = "src/main/java/image/wireshark_start.png";
+    public static final String STOP = "src/main/java/image/wireshark_stop.png";
+    public static final String SAVE = "src/main/java/image/wireshark_save.png";
+    public static final String OPEN = "src/main/java/image/wireshark_open.png";
+    public static final String OPTIONS = "src/main/java/image/wireshark_options.png";
+    public static final String CLOSE = "src/main/java/image/wireshark_close.png";
+    public static final String RESTART = "src/main/java/image/wireshark_restart.png";
 
 
     public static ImageIcon mainIcon() {

@@ -29,22 +29,3 @@ UIManager.setLookAndFeel(lookAndFeel);
 // 当前系统的风格
 String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
 UIManager.setLookAndFeel(lookAndFeel);
-
-JFileChooser使用步骤
-1,创建JFileChooser对象
-   JFileChooser jfc=new JFileChooser(指定本地磁盘路径);
-2,调用JFileChooser的相关方法进行初始化
-   setSelectedFile(File file) / setSelectedFile(File[] selectedFiles)
-   设定默认选中的文件
-   setMultiSelectionEnabled(boolean result):
-   设置是否允许多选,默认是单选
-   setFileSelectionMode(int mode):
-   设置可选择内容,例如文件或文件夹,等,默认只能选择文件
-3,打开文件对话框
-   showOpenDialog(Component component):
-   打开文件加载对话框,并指定父组件
-   showSaveDialog(Component component):
-   打开文件保存对话框,并指定父组件
-4,获取用户选择的结果
-   File getSelectedFile(): 获取用户选择的一个文件
-   File getSelectedFiles(): 获取用户选择的多个文件
