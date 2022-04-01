@@ -79,6 +79,9 @@ public class PacketData implements Serializable {
     }
 
     public PacketData setProtocol(Protocol protocol) {
+        if (protocol == null) {
+            protocol = Protocol.IP;
+        }
         this.protocol = protocol;
         return this;
     }

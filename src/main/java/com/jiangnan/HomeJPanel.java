@@ -66,7 +66,7 @@ public class HomeJPanel extends JPanel {
 
         //-----------------------------------中间表格-----------------------------------------------------------
         jTable = getJTable();//表格
-
+        SwingUtil.setTableColor(jTable);
         //----------------------------------------------------------------------------------------------
         infoArea = getInfoArea();//底部输出文本域
         binArea = getBinArea();//底部2输出二进制数据报文

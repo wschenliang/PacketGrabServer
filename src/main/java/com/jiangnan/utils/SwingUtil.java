@@ -1,5 +1,7 @@
 package com.jiangnan.utils;
 
+import com.jiangnan.enums.Protocol;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -59,21 +61,20 @@ public class SwingUtil {
                 public Component getTableCellRendererComponent(JTable table,
                                                                Object value, boolean isSelected, boolean hasFocus,
                                                                int row, int column) {
-
+                    //Color[] colors = {Color.WHITE, Color.LIGHT_GRAY};
                     DefaultTableModel model = (DefaultTableModel) jTable.getModel();
-                    int rowCount = model.getRowCount();
-                    for (int i = 0; i < rowCount; i++) {
-                        if (model.getValueAt(i, 4).equals("UDP")) {
-                            setBackground(Color.CYAN);
-                            setForeground(Color.WHITE);
-                        } else if (model.getValueAt(i, 4).equals("ARP")){
-                            setBackground(Color.YELLOW);
-                            setForeground(Color.WHITE);
-                        } else {
-                            setBackground(Color.WHITE);
-                            setForeground(Color.BLACK);
-                        }
+                    String protocol = (String) model.getValueAt(row, 4);
+                    if (Protocol.UDP.getName().equals(protocol)) {
+                        setBackground(Color.LIGHT_GRAY);
+                    } else if (Protocol.ARP.getName().equals(protocol)) {
+                        setBackground(Color.ORANGE);
+                    }else if (Protocol.OTHER.getName().equals(protocol)) {
+                        setBackground(Color.RED);
+                    } else {
+                        //一般用白底黑字
+                        setBackground(Color.WHITE);
                     }
+                    setForeground(Color.BLACK);
 
                     return super.getTableCellRendererComponent(table, value,
                             isSelected, hasFocus, row, column);

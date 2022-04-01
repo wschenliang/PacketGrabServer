@@ -175,6 +175,11 @@ public class PacketUtil {
         } else if (p instanceof ICMPPacket) {
             icmpPacketHandle((ICMPPacket)p, packetData);
         } else {
+            IPPacket p1 = (IPPacket) p;
+            packetData.setSrc(p1.src_ip.toString())
+                    .setDest(p1.dst_ip.toString())
+                    .setProtocol(Protocol.OTHER)
+                    .setLength(p1.len);
             LogUtils.log("无法识别报文类型：", p);
         }
         packetData.setNum(NUM++);

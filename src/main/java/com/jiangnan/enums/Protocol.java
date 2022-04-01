@@ -11,6 +11,7 @@ public enum Protocol {
     UDP("UDP"),
     ICMP("ICMP"),
     ARP("ARP"),
+    OTHER("OTHER")
     ;
 
     private String name;
