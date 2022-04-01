@@ -4,7 +4,6 @@ import com.jiangnan.constants.IconUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 /**
  *  启动框架
@@ -25,7 +24,7 @@ public class JpcapJFrame extends JFrame {
             e.printStackTrace();
         }
         this.setTitle("陈亮版Wireshark");
-        this.setSize(1200,1000);
+        this.setSize(1400,1000);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

@@ -1,11 +1,15 @@
 package com.jiangnan.receiver;
 
+import com.jiangnan.enums.Protocol;
 import com.jiangnan.model.PacketData;
 import com.jiangnan.model.PacketQueue;
 import com.jiangnan.utils.PacketUtil;
+import com.jiangnan.utils.SwingUtil;
 import jpcap.packet.*;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 
 /**
@@ -16,8 +20,10 @@ import javax.swing.table.DefaultTableModel;
 public class PacketReceiverImpl implements jpcap.PacketReceiver {
 
     private final DefaultTableModel model;
+    private final JTable jTable;
 
-    public PacketReceiverImpl(DefaultTableModel model) {
+    public PacketReceiverImpl(JTable jTable, DefaultTableModel model) {
+        this.jTable = jTable;
         this.model = model;
     }
 

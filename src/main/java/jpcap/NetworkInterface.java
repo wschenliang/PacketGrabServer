@@ -1,12 +1,14 @@
 package jpcap;
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * 这个类表示一个网络接口。
  */
-public class NetworkInterface {
+public class NetworkInterface implements Serializable {
+    private static final long serialVersionUID = 6871509045581846694L;
     /**
      * 网口名称
      */
@@ -47,7 +49,10 @@ public class NetworkInterface {
         this.addresses = addresses;
     }
 
-
+    /**
+     * 获取物理地址，转化为16进制
+     * @return 返回物理地址
+     */
     public String getMacAddr() {
         if (mac_address == null || mac_address.length == 0) {
             return " ";
@@ -64,13 +69,11 @@ public class NetworkInterface {
 
     @Override
     public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", datalink_name='" + datalink_name + '\'' +
-                ", datalink_description='" + datalink_description + '\'' +
-                ", mac_address=" + getMacAddr()  +
-                ", addresses=" + Arrays.toString(addresses) +
-                "}\n";
+        return "name:" + name +  "\n" +
+                "description:" + description +  "\n" +
+                "datalink_name:" + datalink_name +  "\n" +
+                "datalink_desc:" + datalink_description +  "\n" +
+                "mac_address:" + getMacAddr()  +'\n' +
+                "addresses:" + Arrays.toString(addresses);
     }
 }

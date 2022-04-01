@@ -64,9 +64,7 @@ public class JpcapUtil {
         try {
             sender = JpcapSender.openDevice(device);
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("打开网络发送失败！");
-
+            LogUtils.log("打开网络发送失败！ \n" + e.getMessage());
         }
         return sender;
     }
@@ -78,9 +76,7 @@ public class JpcapUtil {
             captor = JpcapCaptor.openDevice(device, 65535, false, 3000);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("打开网络接口失败！");
-
+            LogUtils.log("打开网络接口失败！ \n" + e.getMessage());
         }
         return captor;
     }
@@ -110,7 +106,7 @@ public class JpcapUtil {
     //发送数据包
     public static void sendPacket(NetworkInterface device, Protocol protocol, String data, String src, String dst) {
         if (StringUtils.hasBlank(src, dst)) {
-            System.out.println("请输入正确的源地址和目的地址");
+            LogUtils.log("请输入正确的源地址和目的地址");
             return;
         }
         String src_mac = "30:52:cb:f0:6f:f6";
@@ -160,8 +156,7 @@ public class JpcapUtil {
         NetworkInterface[] deviceList = JpcapCaptor.getDeviceList();
         String[] deviceName = new String[deviceList.length];
         for (int i = 0; i < deviceList.length; i++) {
-            String name = deviceList[i].name;
-            deviceName[i] = name.substring(name.indexOf("{") + 1, name.length() - 1);
+            deviceName[i] = deviceList[i].name;
         }
         return deviceName;
     }
@@ -177,9 +172,9 @@ public class JpcapUtil {
         }
         NetworkInterface[] devices = JpcapCaptor.getDeviceList();
         NetworkInterface device = null;
-        for(int i=0; i < devices.length; i++){
-            if (devices[i].name.contains(name)){
-                device = devices[i];
+        for (NetworkInterface networkInterface : devices) {
+            if (networkInterface.name.contains(name)) {
+                device = networkInterface;
                 break;
             }
         }

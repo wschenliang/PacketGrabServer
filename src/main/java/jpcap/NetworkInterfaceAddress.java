@@ -40,6 +40,6 @@ public class NetworkInterfaceAddress {
 
     @Override
     public String toString() {
-        return "address=" + address;
+        return address.toString();
     }
 }

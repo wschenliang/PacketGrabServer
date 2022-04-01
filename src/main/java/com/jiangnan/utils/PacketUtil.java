@@ -172,6 +172,10 @@ public class PacketUtil {
             udpPacketHandle((UDPPacket) p, packetData);
         } else if (p instanceof ARPPacket) {
             arpPacketHandle((ARPPacket) p, packetData);
+        } else if (p instanceof ICMPPacket) {
+            icmpPacketHandle((ICMPPacket)p, packetData);
+        } else {
+            LogUtils.log("无法识别报文类型：", p);
         }
         packetData.setNum(NUM++);
         //时间处理逻辑
@@ -185,6 +189,13 @@ public class PacketUtil {
             packetData.setSec(format);
         }
         return packetData;
+    }
+
+    private static void icmpPacketHandle(ICMPPacket p, PacketData packetData) {
+        packetData.setSrc(p.src_ip.toString())
+                .setDest(p.dst_ip.toString())
+                .setProtocol(Protocol.ICMP)
+                .setLength(p.len);
     }
 
     private static void tcpPacketHandle(TCPPacket p, PacketData packetData) {
