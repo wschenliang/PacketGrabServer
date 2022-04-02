@@ -1,5 +1,6 @@
 package com.jiangnan.utils;
 
+import com.jiangnan.constants.ColorSelect;
 import com.jiangnan.enums.Protocol;
 
 import javax.swing.*;
@@ -65,14 +66,13 @@ public class SwingUtil {
                     DefaultTableModel model = (DefaultTableModel) jTable.getModel();
                     String protocol = (String) model.getValueAt(row, 4);
                     if (Protocol.UDP.getName().equals(protocol)) {
-                        setBackground(Color.LIGHT_GRAY);
+                        setBackground(ColorSelect.BLUE_BG);
                     } else if (Protocol.ARP.getName().equals(protocol)) {
-                        setBackground(Color.ORANGE);
+                        setBackground(ColorSelect.YELLOW_BG);
                     }else if (Protocol.OTHER.getName().equals(protocol)) {
                         setBackground(Color.RED);
                     } else {
-                        //一般用白底黑字
-                        setBackground(Color.WHITE);
+                        setBackground(ColorSelect.NORMAL_BG);
                     }
                     setForeground(Color.BLACK);
 

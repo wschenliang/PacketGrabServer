@@ -1,15 +1,12 @@
 package com.jiangnan.receiver;
 
-import com.jiangnan.enums.Protocol;
 import com.jiangnan.model.PacketData;
 import com.jiangnan.model.PacketQueue;
 import com.jiangnan.utils.PacketUtil;
-import com.jiangnan.utils.SwingUtil;
 import jpcap.packet.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 
 /**

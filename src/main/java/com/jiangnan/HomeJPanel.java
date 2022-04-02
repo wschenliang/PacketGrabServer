@@ -470,6 +470,10 @@ public class HomeJPanel extends JPanel {
         openButton.setEnabled(false);//打开文件按钮失效
         clearButton.setEnabled(false);//清除按钮失效
         captor = JpcapUtil.getCaptor(device);
+        if (captor == null) {
+            //可能因为报错为空
+            return;
+        }
         //开启线程2执行循环监听捕获数据，注意线程2是无法使用线程1的本地线程栈内容的，因此，想要保存数据得传递过去
         new Thread(() -> captor.loopPacket(-1, new PacketReceiverImpl(jTable, model))).start();
         LogUtils.log("启动成功，正在捕获...");
